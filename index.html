@@ -52,12 +52,18 @@
                     <i data-lucide="graduation-cap" class="h-6 w-6"></i>
                 </div>
                 <div>
-                    <h1 id="tryout-header-title" class="font-bold text-lg text-gray-800 dark:text-white leading-tight">Tryout Nasional Akbar 2026</h1>
+                    <h1 id="tryout-header-title" class="font-bold text-lg text-gray-800 dark:text-white leading-tight">Try Out UKOM RMIK Poltekun</h1>
                     <span class="text-xs text-gray-500 dark:text-gray-400">Portal Ujian Aman Terintegrasi</span>
                 </div>
             </div>
             
             <div class="flex items-center space-x-3">
+                <!-- Tombol Kalkulator Komputer Pop-up (Akses Cepat Statistik) -->
+                <button onclick="openCalculator()" class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition flex items-center space-x-1" title="Kalkulator Statistik">
+                    <i data-lucide="monitor" class="h-5 w-5 text-brand-600 dark:text-brand-400"></i>
+                    <span class="text-xs font-semibold hidden sm:inline">Kalkulator</span>
+                </button>
+
                 <!-- Admin Shortcut Switch (Hanya terlihat jika admin sukses login) -->
                 <button id="admin-shortcut-btn" onclick="goToPage('admin')" class="hidden flex items-center space-x-1 bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold px-3 py-2 rounded-lg transition shadow">
                     <i data-lucide="shield-alert" class="w-4 h-4"></i>
@@ -328,7 +334,7 @@
             <div class="w-20 h-20 bg-green-100 dark:bg-green-950 rounded-full flex items-center justify-center mx-auto mb-6 text-green-600">
                 <i data-lucide="badge-check" class="w-12 h-12"></i>
             </div>
-            <h2 class="text-2xl font-bold mb-2">Tryout Anda Telah Selesai</h2>
+            <h2 class="text-2xl font-bold mb-2">Try Out Anda Telah Selesai</h2>
             <p class="text-gray-500 dark:text-gray-400 text-sm mb-6">Jawaban Anda berhasil diamankan dan disimpan ke database sistem.</p>
 
             <!-- Participant Quick Receipt -->
@@ -345,7 +351,7 @@
                     <span class="text-gray-500">Waktu Kirim:</span>
                     <span id="report-time" class="font-semibold text-gray-800 dark:text-white">-</span>
                 </div>
-                <!-- Nilai total disembunyikan langsung dari container peserta (disembunyikan sesuai arahan) -->
+                <!-- Nilai total disembunyikan langsung dari container peserta -->
                 <div id="report-score-container" class="hidden flex justify-between text-sm pt-2 border-t border-gray-200 dark:border-gray-700">
                     <span class="text-gray-500 font-bold">Total Nilai Tryout:</span>
                     <span id="report-score" class="font-bold text-brand-600 dark:text-brand-400 text-lg">0 / 0</span>
@@ -356,13 +362,24 @@
                 </div>
             </div>
 
-            <!-- PANEL INFORMASI EVALUASI PRIVAT & OFFLINE (Skor hanya bisa diakses admin, peserta hanya melihat info pengumuman) -->
+            <!-- ANALISIS PENILAIAN PER KATEGORI (EVALUASI MAHASISWA) -->
+            <div class="mb-6 text-left border-t border-gray-200 dark:border-gray-800 pt-4">
+                <h3 class="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-3 flex items-center space-x-1">
+                    <i data-lucide="bar-chart-3" class="w-4 h-4 text-brand-500"></i>
+                    <span>Analisis Evaluasi Per Kategori Soal</span>
+                </h3>
+                <div id="report-category-breakdown" class="space-y-2 bg-gray-50 dark:bg-gray-800/30 p-3 rounded-xl border border-gray-200 dark:border-gray-800 text-xs">
+                    <!-- Loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- PANEL INFORMASI EVALUASI PRIVAT & OFFLINE -->
             <div class="mt-6 mb-6 text-left border-t border-gray-200 dark:border-gray-800 pt-5">
                 <div class="p-4 bg-blue-50 dark:bg-blue-950/20 border-l-4 border-brand-500 text-blue-800 dark:text-blue-300 rounded-xl flex space-x-3 shadow-sm">
                     <i data-lucide="info" class="w-5 h-5 flex-shrink-0 mt-0.5"></i>
                     <div class="text-xs leading-relaxed">
-                        <strong class="font-bold block mb-1">Pengumuman Hasil Tryout:</strong>
-                        Nilai dan hasil pengerjaan Anda bersifat rahasia dan hanya dapat diakses oleh Administrator sistem. Rekapitulasi nilai akhir tryout ini akan diumumkan secara resmi oleh Admin / Pengajar Anda melalui **pertemuan tatap muka (offline)** berikutnya. Terima kasih atas kerja keras Anda!
+                        <strong class="font-bold block mb-1">Pengumuman Hasil Try Out:</strong>
+                        Nilai dan hasil pengerjaan Anda bersifat rahasia dan hanya dapat diakses oleh Administrator sistem. Rekapitulasi nilai akhir try out ini akan diumumkan secara resmi oleh Admin / Pengajar Anda melalui **pertemuan tatap muka (offline)** berikutnya. Terima kasih atas kerja keras Anda!
                     </div>
                 </div>
             </div>
@@ -381,7 +398,7 @@
                         <i data-lucide="settings" class="h-6 w-6"></i>
                     </div>
                     <div>
-                        <h2 class="text-xl font-bold">Panel Kontrol Admin Tryout</h2>
+                        <h2 class="text-xl font-bold">Panel Kontrol Admin Try Out</h2>
                         <p class="text-xs text-gray-400">Atur database soal, whitelist peserta, dan amati nilai secara langsung.</p>
                     </div>
                 </div>
@@ -406,12 +423,12 @@
                     <div class="p-5 border border-gray-200 dark:border-gray-800 rounded-xl space-y-4 bg-gray-50/50 dark:bg-gray-800/30">
                         <h3 class="text-sm font-bold text-gray-800 dark:text-gray-200 flex items-center space-x-2">
                             <i data-lucide="sliders" class="w-4 h-4 text-brand-500"></i>
-                            <span>1. Konfigurasi Event Tryout</span>
+                            <span>1. Konfigurasi Event Try Out</span>
                         </h3>
                         
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
-                                <label class="block text-xs font-semibold mb-1">Tema Nama Ujian / Tryout</label>
+                                <label class="block text-xs font-semibold mb-1">Tema Nama Ujian / Try Out</label>
                                 <input type="text" id="admin-theme-title" class="w-full px-3 py-2 text-xs border border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-800 focus:ring-2 focus:ring-brand-500 outline-none">
                             </div>
                             <div>
@@ -436,38 +453,35 @@
                         </button>
                     </div>
 
-                    <!-- AI QUESTION GENERATOR BLOCK (PARSER) -->
+                    <!-- AI QUESTION GENERATOR BLOCK (PARSER) DENGAN DUKUNGAN FILE TXT -->
                     <div class="p-5 border border-gray-200 dark:border-gray-800 rounded-xl space-y-4 bg-gradient-to-tr from-brand-50 to-white dark:from-brand-950/20 dark:to-gray-900">
                         <div class="flex items-center justify-between">
                             <h3 class="text-sm font-bold text-gray-800 dark:text-gray-200 flex items-center space-x-2">
                                 <i data-lucide="sparkles" class="w-4 h-4 text-brand-500"></i>
-                                <span>2. AI Soal Generator (Parser Salinan Cepat)</span>
+                                <span>2. AI Soal Generator & Import Fleksibel (.txt)</span>
                             </h3>
-                            <span class="text-[10px] bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 px-2 py-0.5 rounded-full font-bold">Super Fast</span>
+                            <span class="text-[10px] bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 px-2 py-0.5 rounded-full font-bold">Auto-Parse</span>
                         </div>
                         
-                        <p class="text-xs text-gray-500">Salin materi Anda dari Word/GPT, tempel di bawah menggunakan format standar termasuk baris kategori untuk evaluasi pengerjaan siswa.</p>
+                        <p class="text-xs text-gray-500">Upload file teks (`.txt`) atau tempel langsung di bawah. AI akan secara fleksibel menyesuaikan format selama elemen soal, pilihan (A-E), kunci, dan kategori tersedia.</p>
+
+                        <!-- Upload File Txt Input -->
+                        <div class="bg-white dark:bg-gray-800 p-3 rounded-lg border border-gray-200 dark:border-gray-700">
+                            <label class="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-300">Upload File Soal (.txt)</label>
+                            <input type="file" id="ai-txt-file" accept=".txt" onchange="handleTxtFileUpload(event)" class="w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100 dark:file:bg-brand-950 dark:file:text-brand-300 cursor-pointer">
+                        </div>
 
                         <!-- Demo Text Helper Inside Box -->
                         <div class="relative">
-                            <textarea id="ai-import-area" rows="8" placeholder="Format Masukan:
-1. Apa ibukota Indonesia?
-A. Bandung
-B. Jakarta
-C. Surabaya
-D. Medan
-E. Samarinda
+                            <textarea id="ai-import-area" rows="6" placeholder="Format Masukan Fleksibel:
+1. Berapa nilai rata-rata dari data statistik berikut...
+A. 10
+B. 20
+C. 30
+D. 40
+E. 50
 Kunci: B
-Kategori: Geografi
-
-2. Siapa presiden pertama Indonesia?
-A. Joko Widodo
-B. Megawati
-C. Ir. Soekarno
-D. BJ. Habibie
-E. Abdurrahman Wahid
-Kunci: C
-Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+Kategori: Statistik" class="w-full p-3 font-mono text-xs border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 outline-none focus:ring-2 focus:ring-brand-500"></textarea>
                         </div>
 
                         <div class="flex justify-between items-center">
@@ -537,6 +551,47 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
 
     </main>
 
+    <!-- CALCULATOR POPUP MODAL (DENGAN LOGO KOMPUTER) -->
+    <div id="calculator-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 max-w-xs w-full p-4 rounded-2xl shadow-2xl space-y-3">
+            <div class="flex items-center justify-between pb-2 border-b border-gray-200 dark:border-gray-800">
+                <div class="flex items-center space-x-2 text-brand-600 dark:text-brand-400 font-bold text-sm">
+                    <i data-lucide="monitor" class="w-4 h-4"></i>
+                    <span>Kalkulator Statistik</span>
+                </div>
+                <button onclick="closeCalculator()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            </div>
+            <div class="bg-gray-100 dark:bg-gray-800 p-3 rounded-xl text-right font-mono text-xl font-bold tracking-wider overflow-x-auto text-gray-800 dark:text-white" id="calc-display">0</div>
+            <div class="grid grid-cols-4 gap-1.5 text-xs font-semibold">
+                <button onclick="calcClear()" class="p-2.5 bg-red-100 dark:bg-red-950/40 text-red-600 rounded-lg hover:bg-red-200 transition">C</button>
+                <button onclick="calcAppend('(')" class="p-2.5 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 transition">(</button>
+                <button onclick="calcAppend(')')" class="p-2.5 bg-gray-200 dark:bg-gray-700 rounded-lg hover:bg-gray-300 transition">)</button>
+                <button onclick="calcAppend('/')" class="p-2.5 bg-brand-100 dark:bg-brand-950 text-brand-600 rounded-lg hover:bg-brand-200 transition">÷</button>
+                
+                <button onclick="calcAppend('7')" class="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition">7</button>
+                <button onclick="calcAppend('8')" class="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition">8</button>
+                <button onclick="calcAppend('9')" class="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition">9</button>
+                <button onclick="calcAppend('*')" class="p-2.5 bg-brand-100 dark:bg-brand-950 text-brand-600 rounded-lg hover:bg-brand-200 transition">×</button>
+                
+                <button onclick="calcAppend('4')" class="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition">4</button>
+                <button onclick="calcAppend('5')" class="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition">5</button>
+                <button onclick="calcAppend('6')" class="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition">6</button>
+                <button onclick="calcAppend('-')" class="p-2.5 bg-brand-100 dark:bg-brand-950 text-brand-600 rounded-lg hover:bg-brand-200 transition">-</button>
+                
+                <button onclick="calcAppend('1')" class="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition">1</button>
+                <button onclick="calcAppend('2')" class="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition">2</button>
+                <button onclick="calcAppend('3')" class="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition">3</button>
+                <button onclick="calcAppend('+')" class="p-2.5 bg-brand-100 dark:bg-brand-950 text-brand-600 rounded-lg hover:bg-brand-200 transition">+</button>
+                
+                <button onclick="calcAppend('0')" class="p-2.5 bg-gray-100 dark:bg-gray-800 col-span-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition">0</button>
+                <button onclick="calcAppend('.')" class="p-2.5 bg-gray-100 dark:bg-gray-800 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition">.</button>
+                <button onclick="calcCalculate()" class="p-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg transition">=</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ANTI-CHEAT FLOATING PAUSE MODAL -->
     <div id="pause-modal" class="fixed inset-0 bg-gray-900/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-white dark:bg-gray-900 border border-red-500 max-w-md w-full p-8 rounded-2xl text-center shadow-2xl">
@@ -597,7 +652,7 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
     <!-- FOOTER -->
     <footer class="mt-auto border-t border-gray-200 bg-white py-4 dark:border-gray-800 dark:bg-gray-900 text-center">
         <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-gray-500 dark:text-gray-400">
-            <p>© 2026 Tryout Online System. All Rights Reserved.</p>
+            <p>© 2026 Try Out UKOM RMIK Poltekun. All Rights Reserved.</p>
             <p class="flex items-center space-x-1 cursor-pointer select-none" onclick="handleSecretTrigger()" title="Akses Rahasia Sistem">
                 <i data-lucide="shield" class="w-3.5 h-3.5 text-green-500"></i>
                 <span>Anti-Cheat Connection Secured</span>
@@ -613,7 +668,7 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
         let appState = {
             theme: 'light',
             currentPage: 'login', // login, admin-login, instruction, exam, result, admin
-            tryoutTitle: "Tryout UTBK-SNBT Akbar 2026",
+            tryoutTitle: "Try Out UKOM RMIK Poltekun",
             examDurationMinutes: 30,
             examToken: "TRYOUT2026", // Default Token Keamanan Masuk
             allowedNims: ["123456", "202611", "ADMIN999", "888888"],
@@ -654,7 +709,7 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
             submissions: []
         };
 
-        // Kredensial Akses Administrator Utama (Ganti sesuai kebutuhan)
+        // Kredensial Akses Administrator Utama
         const ADMIN_CREDENTIALS = {
             username: "admin",
             password: "superadmin2026"
@@ -701,11 +756,11 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
         };
 
         function saveStateToStorage() {
-            localStorage.setItem('TRYOUT_APP_STATE_2026_SECURE', JSON.stringify({
+            localStorage.setItem('TRYOUT_APP_STATE_UKOM_RMIK', JSON.stringify({
                 theme: appState.theme,
                 tryoutTitle: appState.tryoutTitle,
                 examDurationMinutes: appState.examDurationMinutes,
-                examToken: appState.examToken, // Menyimpan token perubahan admin
+                examToken: appState.examToken,
                 allowedNims: appState.allowedNims,
                 questions: appState.questions,
                 submissions: appState.submissions
@@ -713,14 +768,14 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
         }
 
         function loadStateFromStorage() {
-            const data = localStorage.getItem('TRYOUT_APP_STATE_2026_SECURE');
+            const data = localStorage.getItem('TRYOUT_APP_STATE_UKOM_RMIK');
             if (data) {
                 try {
                     const parsed = JSON.parse(data);
                     appState.theme = parsed.theme || 'light';
-                    appState.tryoutTitle = parsed.tryoutTitle || "Tryout UTBK-SNBT Akbar 2026";
+                    appState.tryoutTitle = parsed.tryoutTitle || "Try Out UKOM RMIK Poltekun";
                     appState.examDurationMinutes = parsed.examDurationMinutes || 30;
-                    appState.examToken = parsed.examToken || "TRYOUT2026"; // Memuat token tryout
+                    appState.examToken = parsed.examToken || "TRYOUT2026";
                     appState.allowedNims = parsed.allowedNims || ["123456", "202611", "ADMIN999", "888888"];
                     appState.questions = parsed.questions || appState.questions;
                     appState.submissions = parsed.submissions || [];
@@ -783,7 +838,6 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
         // ==========================================
         function handleSecretTrigger() {
             const currentTime = new Date().getTime();
-            // Jika rentang klik di bawah 1 detik, tambahkan hit counter
             if (currentTime - lastTriggerTime < 1000) {
                 secretTriggerCount++;
             } else {
@@ -822,17 +876,55 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
         }
 
         // ==========================================
+        // CALCULATOR POPUP CONTROLLER
+        // ==========================================
+        function openCalculator() {
+            document.getElementById('calculator-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function closeCalculator() {
+            document.getElementById('calculator-modal').classList.add('hidden');
+        }
+
+        let calcExpr = "";
+        function calcAppend(val) {
+            if (calcExpr === "0" && val !== ".") {
+                calcExpr = val;
+            } else {
+                calcExpr += val;
+            }
+            document.getElementById('calc-display').innerText = calcExpr;
+        }
+
+        function calcClear() {
+            calcExpr = "";
+            document.getElementById('calc-display').innerText = "0";
+        }
+
+        function calcCalculate() {
+            try {
+                // Evaluasi aman ekspresi matematika statistik sederhana
+                let sanitized = calcExpr.replace(/×/g, '*').replace(/÷/g, '/');
+                let result = eval(sanitized);
+                document.getElementById('calc-display').innerText = result;
+                calcExpr = String(result);
+            } catch (err) {
+                document.getElementById('calc-display').innerText = "Error";
+                calcExpr = "";
+            }
+        }
+
+        // ==========================================
         // ANTI-CHEAT CONTROLLER ENGINE
         // ==========================================
         function setupAntiCheat() {
-            // 1. Detect Ganti Tab (Page Visibility)
             document.addEventListener('visibilitychange', () => {
                 if (appState.isExamRunning && document.hidden) {
                     triggerCheatViolation("Pindah Tab / Membuka aplikasi lain terdeteksi!");
                 }
             });
 
-            // 2. Prevent Keyboard Shortcut & Mouse click
             document.addEventListener('contextmenu', (e) => {
                 if (appState.isExamRunning) {
                     e.preventDefault();
@@ -842,12 +934,10 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
 
             document.addEventListener('keydown', (e) => {
                 if (appState.isExamRunning) {
-                    // Block F12
                     if (e.key === 'F12' || e.keyCode === 123) {
                         e.preventDefault();
                         showInlineToast("Tombol Pintasan Pengembang diblokir!");
                     }
-                    // Block Copy & Paste Shortcut
                     if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C' || e.key === 'v' || e.key === 'V' || e.key === 'x' || e.key === 'X')) {
                         e.preventDefault();
                         showInlineToast("Aksi Salin-Tempel (Copy-Paste) dilarang!");
@@ -855,14 +945,11 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
                 }
             });
 
-            // 3. Detect Fullscreen Exit
             document.addEventListener('fullscreenchange', () => {
                 if (appState.isExamRunning) {
                     if (!document.fullscreenElement) {
-                        // Exited fullscreen, show overlay pause
                         document.getElementById('pause-modal').classList.remove('hidden');
                     } else {
-                        // Back into fullscreen, hide pause modal
                         document.getElementById('pause-modal').classList.add('hidden');
                     }
                 }
@@ -871,17 +958,13 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
 
         function triggerCheatViolation(reason) {
             appState.cheatWarnings++;
-            
-            // Sync warning UI
             document.getElementById('cheat-counter').innerText = `${appState.cheatWarnings}/3`;
             
             if (appState.cheatWarnings >= 3) {
-                // Auto Force Submit
                 closeWarningModal();
                 forceFinishExam("Kunci Otomatis (Melebihi batas toleransi pelanggaran ganti tab)");
                 showInlineToast("Ujian Anda dikunci karena terdeteksi melakukan kecurangan!");
             } else {
-                // Show Warning Alert Modal
                 document.getElementById('warning-modal-desc').innerText = `Anda terdeteksi melakukan aktivitas di luar halaman ujian (${reason}). Harap fokus pengerjaan.`;
                 document.getElementById('warning-modal-num').innerText = appState.cheatWarnings;
                 document.getElementById('warning-modal').classList.remove('hidden');
@@ -905,7 +988,7 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
         }
 
         // ==========================================
-        // TOAST SYSTEM (In Frame safe)
+        // TOAST SYSTEM
         // ==========================================
         function showInlineToast(msg) {
             const toast = document.createElement('div');
@@ -925,7 +1008,7 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
             e.preventDefault();
             const name = document.getElementById('login-name').value.trim();
             const nim = document.getElementById('login-nim').value.trim();
-            const token = document.getElementById('login-token').value.trim(); // Capture Token
+            const token = document.getElementById('login-token').value.trim();
             const errorBox = document.getElementById('login-error-box');
             const errorMsg = document.getElementById('login-error-msg');
 
@@ -935,7 +1018,6 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
                 return;
             }
 
-            // 1. Validasi Whitelist NIM
             const isValidNim = appState.allowedNims.some(allowedNim => allowedNim.toLowerCase() === nim.toLowerCase());
             if (!isValidNim) {
                 errorMsg.innerText = `NIM "${nim}" tidak terdaftar dalam whitelist ujian!`;
@@ -943,14 +1025,12 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
                 return;
             }
 
-            // 2. Validasi Token Ujian (Case-sensitive untuk menjaga keamanan tinggi)
             if (token !== appState.examToken) {
                 errorMsg.innerText = "Token Ujian salah atau tidak valid! Silakan tanyakan kepada pengawas.";
                 errorBox.classList.remove('hidden');
                 return;
             }
 
-            // 3. Validasi Session Lock (Satu NIM, Satu Kesempatan)
             const alreadySubmitted = appState.submissions.some(sub => sub.nim.toLowerCase() === nim.toLowerCase());
             if (alreadySubmitted) {
                 errorMsg.innerText = `Peringatan: Peserta dengan NIM "${nim}" sudah pernah mengirimkan ujian sebelumnya!`;
@@ -958,24 +1038,19 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
                 return;
             }
 
-            // Sukses masuk
             appState.currentUser = {
                 name: name,
                 nim: nim,
                 startTime: new Date().toLocaleTimeString()
             };
 
-            // Setup display layout
             document.getElementById('user-display-name').innerText = name;
             document.getElementById('user-display-nim').innerText = `NIM: ${nim}`;
             
-            // Create user avatar initial
             const initial = name.split(" ").map(n => n[0]).join("").substring(0,2).toUpperCase();
             document.getElementById('user-avatar').innerText = initial;
 
             errorBox.classList.add('hidden');
-            
-            // Bersihkan input token demi keamanan siber
             document.getElementById('login-token').value = "";
             
             goToPage('instruction');
@@ -994,14 +1069,11 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
                 errorBox.classList.add('hidden');
                 appState.isAdminAuthenticated = true;
                 
-                // Clear input form
                 document.getElementById('admin-username-input').value = "";
                 document.getElementById('admin-password-input').value = "";
 
-                // Tampilkan jalan pintas admin di header
                 document.getElementById('admin-shortcut-btn').classList.remove('hidden');
 
-                // Redirect to Admin Panel Dashboard
                 showInlineToast("Otentikasi Admin Berhasil!");
                 goToPage('admin');
             } else {
@@ -1012,9 +1084,7 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
 
         function handleAdminLogout() {
             appState.isAdminAuthenticated = false;
-            // Sembunyikan jalan pintas admin di header
             document.getElementById('admin-shortcut-btn').classList.add('hidden');
-            // Bersihkan hash agar tidak memicu login admin secara otomatis saat di-refresh
             window.location.hash = "";
             showInlineToast("Sesi Admin telah dibersihkan.");
             goToPage('login');
@@ -1029,13 +1099,11 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
                 return;
             }
 
-            // Clear previous exam state
             appState.cheatWarnings = 0;
             appState.currentQuestionIndex = 0;
             appState.userAnswers = {};
             document.getElementById('cheat-counter').innerText = "0/3";
 
-            // Request Fullscreen
             const docEl = document.documentElement;
             const enterFullscreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullscreen || docEl.msRequestFullscreen;
             
@@ -1043,8 +1111,7 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
                 docEl.requestFullscreen().then(() => {
                     launchExamEngine();
                 }).catch(err => {
-                    // User blocked or unsupported
-                    console.log("Abaikan atau jalankan tanpa paksaan layar penuh jika diblokir", err);
+                    console.log("Jalankan tanpa fullscreen penuh", err);
                     launchExamEngine();
                 });
             } else {
@@ -1056,7 +1123,6 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
             appState.isExamRunning = true;
             goToPage('exam');
 
-            // Setup timer
             appState.timeRemaining = appState.examDurationMinutes * 60;
             updateTimerDisplay();
 
@@ -1071,7 +1137,6 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
                 }
             }, 1000);
 
-            // Render first question
             renderQuestion();
             renderQuestionGrid();
         }
@@ -1085,7 +1150,6 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
             const formatPad = (val) => String(val).padStart(2, '0');
             timerEl.innerText = `${formatPad(hrs)}:${formatPad(mins)}:${formatPad(secs)}`;
 
-            // Red color for warning in last 5 minutes
             if (appState.timeRemaining < 300) {
                 timerEl.className = "text-3xl font-bold tracking-tight text-red-600 animate-pulse tabular-nums";
             } else {
@@ -1101,11 +1165,9 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
             document.getElementById('total-questions-lbl').innerText = appState.questions.length;
             document.getElementById('question-text').innerText = q.text;
 
-            // Load doubtful state
             const answerState = appState.userAnswers[idx] || { optionIndex: null, isDoubtful: false };
             document.getElementById('doubt-checkbox').checked = answerState.isDoubtful;
 
-            // Options Renderer A - E
             const container = document.getElementById('options-container');
             container.innerHTML = "";
 
@@ -1134,14 +1196,12 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
                 container.appendChild(btn);
             });
 
-            // Handle navigation buttons disabled state
             document.getElementById('btn-prev').disabled = idx === 0;
             document.getElementById('btn-prev').style.opacity = idx === 0 ? '0.5' : '1';
             
             document.getElementById('btn-next').disabled = idx === appState.questions.length - 1;
             document.getElementById('btn-next').style.opacity = idx === appState.questions.length - 1 ? '0.5' : '1';
 
-            // ATURAN SAFETY DINAMIS: Tombol Selesai Ujian hanya akan muncul pada nomor soal terakhir
             const isLastQuestion = idx === appState.questions.length - 1;
             const btnSubmit = document.getElementById('btn-submit');
             if (isLastQuestion) {
@@ -1197,7 +1257,7 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
                 const answerState = appState.userAnswers[idx];
                 const isActive = appState.currentQuestionIndex === idx;
                 
-                let btnClass = "bg-white dark:bg-gray-850 border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-300"; // default
+                let btnClass = "bg-white dark:bg-gray-850 border-gray-300 dark:border-gray-700 text-gray-800 dark:text-gray-300";
                 let prefixBadge = "";
 
                 if (answerState) {
@@ -1236,47 +1296,34 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
         }
 
         function forceFinishExam(systemReason = "") {
-            // Stop Engine Ujian
             appState.isExamRunning = false;
             clearInterval(appState.timerInterval);
             
-            // Matikan Fullscreen setelah selesai ujian
             if (document.exitFullscreen) {
                 document.exitFullscreen().catch(() => {});
             }
 
             closeSubmitConfirm();
 
-            // 1. HITUNG SKOR & ANALISIS KATEGORI SECARA DINAMIS (Skor murni tanpa pengurangan poin jika salah)
             let correctCount = 0;
-            const categoryData = {}; // Format: { "Kebudayaan": { correct: 0, total: 0 } }
+            const categoryBreakdown = {};
 
             appState.questions.forEach((q, idx) => {
                 const cat = q.category || "Umum";
-                if (!categoryData[cat]) {
-                    categoryData[cat] = { correct: 0, total: 0 };
+                if (!categoryBreakdown[cat]) {
+                    categoryBreakdown[cat] = { correct: 0, total: 0 };
                 }
-                categoryData[cat].total++;
+                categoryBreakdown[cat].total++;
 
                 const ans = appState.userAnswers[idx];
                 if (ans && ans.optionIndex === q.correctIndex) {
                     correctCount++;
-                    categoryData[cat].correct++;
+                    categoryBreakdown[cat].correct++;
                 }
             });
 
-            // Kalkulasi skala nilai 0 - 100 (persentase)
             const scorePercent = Math.round((correctCount / appState.questions.length) * 100);
 
-            // 2. FORMULASIKAN TEKS ANALISIS KATEGORI (Hanya berupa persentase saja seperti saat ini)
-            let analisisKategoriText = "";
-            Object.keys(categoryData).forEach(catName => {
-                const info = categoryData[catName];
-                const pct = Math.round((info.correct / info.total) * 100);
-                analisisKategoriText += `[${catName}: ${pct}%] \n`;
-            });
-
-            // 3. SIMPAN REKAP LOKAL (BACKUP DATABASE LOKAL)
             const subData = {
                 id: crypto.randomUUID(),
                 name: appState.currentUser.name,
@@ -1286,48 +1333,16 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
                 score: scorePercent,
                 cheatWarnings: appState.cheatWarnings,
                 submittedAt: new Date().toLocaleTimeString(),
-                userAnswers: JSON.parse(JSON.stringify(appState.userAnswers)) // deep copy
+                categoryBreakdown: categoryBreakdown,
+                userAnswers: JSON.parse(JSON.stringify(appState.userAnswers))
             };
 
             appState.submissions.push(subData);
             saveStateToStorage();
 
-            // 4. TRANSMISI DATA ANALISIS KATEGORI KE SPREADSHEET
-            const dataKirim = {
-                nama: appState.currentUser.name,
-                nim: appState.currentUser.nim,
-                skor: scorePercent, // Skala nilai 0-100
-                benar: correctCount,
-                totalSoal: appState.questions.length,
-                pelanggaran: appState.cheatWarnings,
-                waktuMulai: appState.currentUser.startTime,
-                analisisKategori: analisisKategoriText // Hasil persentase utuh per kategori
-            };
-
-            // Masukkan URL Web App Google Sheets Anda di bawah ini!
-            const googleSheetUrl = "https://script.google.com/macros/s/AKfycby7z_jz6PBxj4VOQZS7eVZCGeZxJr2PFDrDrFFF77g-n_HdsmkmTOd99XXWq6lr4NCM/exec"; 
-
-            // Kirim ke Google Sheets secara asinkron di latar belakang
-            fetch(googleSheetUrl, {
-                method: "POST",
-                mode: "no-cors", 
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(dataKirim)
-            })
-            .then(() => {
-                console.log("Sukses! Laporan nilai berskala 0-100 & analisis persentase kategori terkirim.");
-            })
-            .catch((err) => {
-                console.error("Gagal mengirim laporan ke Google Sheets:", err);
-            });
-
-            // Perbarui rekap tampilan kontrol Admin lokal
             renderAdminSubmissions();
             renderQuestionStats();
 
-            // Alihkan peserta ke halaman hasil selesai ujian
             goToPage('result');
         }
 
@@ -1338,17 +1353,37 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
             document.getElementById('report-name').innerText = sub.name;
             document.getElementById('report-nim').innerText = sub.nim;
             document.getElementById('report-time').innerText = sub.submittedAt;
-            
-            // Amankan Nilai Mentah Total agar tidak langsung tampil di layar peserta (sesuai arahan)
             document.getElementById('report-score-container').classList.add('hidden');
             
             document.getElementById('report-cheat').innerText = `${sub.cheatWarnings} kali terdeteksi`;
-            
             if (sub.cheatWarnings > 0) {
                 document.getElementById('report-cheat').className = "font-bold text-red-500 animate-pulse";
             } else {
                 document.getElementById('report-cheat').className = "font-bold text-green-500";
             }
+
+            // Render Evaluasi Analisis Per Kategori untuk Mahasiswa
+            const breakdownContainer = document.getElementById('report-category-breakdown');
+            breakdownContainer.innerHTML = "";
+
+            if (sub.categoryBreakdown) {
+                Object.keys(sub.categoryBreakdown).forEach(cat => {
+                    const info = sub.categoryBreakdown[cat];
+                    const incorrect = info.total - info.correct;
+                    const row = document.createElement('div');
+                    row.className = "flex justify-between items-center py-1.5 border-b border-gray-200/50 dark:border-gray-800 last:border-0";
+                    row.innerHTML = `
+                        <span class="font-medium text-gray-700 dark:text-gray-300">${cat}</span>
+                        <div class="space-x-2 text-[11px]">
+                            <span class="text-green-600 font-bold">Benar: ${info.correct}</span>
+                            <span class="text-red-500 font-bold">Salah: ${incorrect}</span>
+                            <span class="text-gray-400">(${info.total} soal)</span>
+                        </div>
+                    `;
+                    breakdownContainer.appendChild(row);
+                });
+            }
+
             lucide.createIcons();
         }
 
@@ -1363,7 +1398,7 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
         function saveAdminConfig() {
             const themeTitle = document.getElementById('admin-theme-title').value.trim();
             const duration = parseInt(document.getElementById('admin-duration').value);
-            const token = document.getElementById('admin-token').value.trim(); // Simpan Token baru
+            const token = document.getElementById('admin-token').value.trim();
             const nimsText = document.getElementById('admin-nims-whitelist').value;
 
             if (!themeTitle || isNaN(duration) || !token) {
@@ -1373,7 +1408,7 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
 
             appState.tryoutTitle = themeTitle;
             appState.examDurationMinutes = duration;
-            appState.examToken = token; // Update token aktif dalam memory
+            appState.examToken = token;
             appState.allowedNims = nimsText.split(',').map(s => s.trim()).filter(Boolean);
 
             document.getElementById('tryout-header-title').innerText = themeTitle;
@@ -1382,11 +1417,23 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
             showInlineToast("Konfigurasi event berhasil diperbarui!");
         }
 
-        // AI PARSER ENGINE (GENERATOR)
+        // DUKUNGAN UPLOAD FILE TXT
+        function handleTxtFileUpload(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('ai-import-area').value = event.target.result;
+                showInlineToast("File teks soal (.txt) berhasil dimuat ke parser!");
+            };
+            reader.readAsText(file);
+        }
+
+        // AI PARSER FLEKSIBEL
         function processAIImport() {
             const text = document.getElementById('ai-import-area').value.trim();
             if (!text) {
-                showInlineToast("Silakan tempel teks materi soal terlebih dahulu!");
+                showInlineToast("Silakan upload file .txt atau tempel teks materi soal terlebih dahulu!");
                 return;
             }
 
@@ -1395,15 +1442,15 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
 
             blocks.forEach(block => {
                 const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
-                if (lines.length < 3) return; // invalid block
+                if (lines.length < 3) return;
 
                 let questionText = "";
                 let options = [];
                 let correctIndex = -1;
-                let category = "Umum"; // Default category
+                let category = "Statistik RMIK";
 
                 lines.forEach(line => {
-                    const optionMatch = line.match(/^([A-E])\.\s*(.*)/i);
+                    const optionMatch = line.match(/^([A-E])[\.\)]\s*(.*)/i);
                     const keyMatch = line.match(/^(Kunci|Jawaban|Key):\s*([A-E])/i);
                     const categoryMatch = line.match(/^(Kategori|Category):\s*(.*)/i);
 
@@ -1428,7 +1475,7 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
                     }
                     parsedQuestions.push({
                         text: questionText,
-                        options: options.slice(0, 5), // strict max 5 options
+                        options: options.slice(0, 5),
                         correctIndex: correctIndex,
                         category: category
                     });
@@ -1436,28 +1483,26 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
             });
 
             if (parsedQuestions.length === 0) {
-                showInlineToast("Gagal mendeteksi pola soal! Cek keselarasan format contoh.");
+                showInlineToast("Format kurang lengkap! Pastikan ada soal, pilihan A-E, dan Kunci jawaban.");
                 return;
             }
 
             appState.questions = appState.questions.concat(parsedQuestions);
             if (appState.questions.length > 200) {
-                appState.questions = appState.questions.slice(0, 200); // limit to 200
-                showInlineToast("Batas maksimal 200 soal tercapai!");
+                appState.questions = appState.questions.slice(0, 200);
             }
 
             saveStateToStorage();
             renderAdminQuestions();
             renderQuestionStats();
 
-            // Flash Success MSG
             const msg = document.getElementById('ai-parse-success-msg');
             msg.innerText = `Berhasil memproses & menyuntik ${parsedQuestions.length} soal!`;
             msg.classList.remove('hidden');
             setTimeout(() => { msg.classList.add('hidden'); }, 4000);
 
-            // Reset textarea
             document.getElementById('ai-import-area').value = "";
+            document.getElementById('ai-txt-file').value = "";
         }
 
         function clearAllQuestions() {
@@ -1475,7 +1520,7 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
             listContainer.innerHTML = "";
 
             if (appState.questions.length === 0) {
-                listContainer.innerHTML = `<p class="text-xs text-gray-400 italic py-4 text-center">Belum ada soal aktif. Gunakan panel AI di atas.</p>`;
+                listContainer.innerHTML = `<p class="text-xs text-gray-400 italic py-4 text-center">Belum ada soal aktif. Gunakan panel upload .txt atau AI di atas.</p>`;
                 return;
             }
 
@@ -1499,7 +1544,6 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
                 card.innerHTML = `
                     <div class="flex justify-between items-start gap-2">
                         <div>
-                            <!-- Badge Kategori Tampil di Menu Administrator -->
                             <span class="bg-brand-100 text-brand-700 dark:bg-brand-950 dark:text-brand-300 text-[9px] font-bold px-1.5 py-0.5 rounded-md mr-1.5 uppercase">${q.category || 'Umum'}</span>
                             <strong class="text-gray-800 dark:text-white">Soal ${idx + 1}: ${q.text}</strong>
                         </div>
@@ -1582,7 +1626,6 @@ Kategori: Sejarah" class="w-full p-3 font-mono text-xs border border-gray-300 da
 
                 const ratioPercent = totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 100;
                 
-                // Difficulty Index Badge
                 let diffLabel = "Mudah";
                 let badgeClass = "bg-green-100 dark:bg-green-950 text-green-700 dark:text-green-300";
 
