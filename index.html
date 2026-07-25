@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Try Out UKOM RMIK Poltekun 2026</title>
     
-    <!-- AUTO CACHE BUSTER (MEMAKSA BROWSER HP UPDATE TAMPILAN) -->
+    <!-- AUTO CACHE BUSTER -->
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.getRegistrations().then(function(registrations) {
@@ -30,12 +30,10 @@
             -ms-user-select: none;
             user-select: none;
         }
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
 
-        /* Style Tombol Nomor Soal Kontras Tinggi */
         .num-btn {
             background-color: #f8fafc !important;
             color: #0f172a !important;
@@ -58,7 +56,6 @@
             transform: scale(1.05);
         }
 
-        /* Floating Calculator Button Fix iOS & Android */
         #calc-fab-btn {
             position: fixed !important;
             bottom: 25px !important;
@@ -73,20 +70,15 @@
     <!-- HEADER TOP BAR -->
     <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-md">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
-            <div class="flex items-center space-x-3" onclick="handleSecretTrigger()">
+            <!-- PINTU MASUK ADMIN TERSEMBUNYI: Klik 5x pada logo / judul -->
+            <div class="flex items-center space-x-3 cursor-pointer select-none" onclick="handleSecretTrigger()">
                 <div class="bg-sky-600 p-2 rounded-xl text-white">
                     <i class="fa-solid fa-graduation-cap text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="font-bold text-base md:text-lg text-white leading-tight">Try Out UKOM RMIK Poltekun 2026</h1>
-                    <p class="text-xs text-sky-400 font-medium">Portal Ujian Aman Terintegrasi</p>
+                    <h1 class="font-bold text-base md:text-lg text-white leading-tight" id="header-title">Try Out UKOM RMIK Poltekun 2026</h1>
+                    <p class="text-xs text-sky-400 font-medium" id="header-subtitle">Portal Ujian Aman Terintegrasi</p>
                 </div>
-            </div>
-            
-            <div class="flex items-center space-x-2">
-                <button onclick="goToPage('admin-login')" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold px-3 py-1.5 rounded-lg border border-slate-700 transition">
-                    <i class="fa-solid fa-shield-halved text-amber-400 mr-1"></i> Admin
-                </button>
             </div>
         </div>
     </header>
@@ -94,7 +86,7 @@
     <!-- MAIN CONTENT -->
     <main class="flex-grow max-w-7xl w-full mx-auto p-3 sm:p-5 flex flex-col justify-center">
         
-        <!-- PAGE 1: LOGIN -->
+        <!-- PAGE 1: LOGIN PESERTA -->
         <section id="page-login" class="max-w-md w-full mx-auto bg-slate-900 p-6 sm:p-8 rounded-2xl border border-slate-800 shadow-2xl">
             <div class="text-center mb-6">
                 <h2 class="text-2xl font-bold text-white tracking-tight">Selamat Datang</h2>
@@ -107,7 +99,7 @@
                     <input type="text" id="login-name" required placeholder="Masukkan Nama Lengkap" class="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-sky-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">NIM</label>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nomor Induk Mahasiswa (NIM)</label>
                     <input type="text" id="login-nim" required placeholder="Masukkan NIM" class="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-sky-500">
                 </div>
                 <div>
@@ -120,32 +112,32 @@
             </form>
         </section>
 
-        <!-- PAGE 2: ADMIN LOGIN -->
+        <!-- PAGE 2: LOGIN ADMIN TERSEMBUNYI -->
         <section id="page-admin-login" class="max-w-md w-full mx-auto bg-slate-900 p-6 sm:p-8 rounded-2xl border border-slate-800 shadow-2xl hidden">
             <div class="text-center mb-6">
-                <i class="fa-solid fa-user-gear text-3xl text-amber-400 mb-2"></i>
+                <i class="fa-solid fa-shield-halved text-3xl text-amber-400 mb-2"></i>
                 <h2 class="text-xl font-bold text-white">Login Administrator</h2>
+                <p class="text-xs text-slate-400">Panel Tersembunyi Pengelola Ujian</p>
             </div>
             <form onsubmit="handleAdminLogin(event)" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Username</label>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Username Admin</label>
                     <input type="text" id="admin-user" required class="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none">
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1">Password</label>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Password Admin</label>
                     <input type="password" id="admin-pass" required class="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none">
                 </div>
                 <div class="flex gap-2 pt-2">
                     <button type="button" onclick="goToPage('login')" class="w-1/2 py-2.5 bg-slate-800 text-slate-300 rounded-xl text-xs font-bold">Batal</button>
-                    <button type="submit" class="w-1/2 py-2.5 bg-amber-600 text-white rounded-xl text-xs font-bold">Masuk Admin</button>
+                    <button type="submit" class="w-1/2 py-2.5 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs font-bold">Masuk Admin</button>
                 </div>
             </form>
         </section>
 
-        <!-- PAGE 3: EXAM INTERFACE (TIMER MENCAR DI ATAS SOAL + GEMINI RAK SOAL) -->
+        <!-- PAGE 3: INTERFASE UJIAN -->
         <section id="page-exam" class="w-full hidden">
-            
-            <!-- TIMER MENCAR & SANGAT JELAS DI BAGIAN PALING ATAS (TANPA NEED SCROLL) -->
+            <!-- TIMER SANGAT JELAS DI BAGIAN ATAS -->
             <div class="w-full bg-slate-900 border-2 border-sky-500/50 rounded-2xl p-4 mb-4 text-center shadow-xl flex flex-col items-center justify-center">
                 <span class="text-[11px] font-bold text-sky-400 uppercase tracking-widest block mb-1">
                     <i class="fa-regular fa-clock mr-1 animate-spin"></i> Sisa Waktu Pengerjaan Ujian
@@ -156,11 +148,8 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 w-full items-start">
-                
-                <!-- AREA UTAMA: SOAL & PILIHAN (8 COLS DESKTOP) -->
+                <!-- AREA UTAMA: SOAL & PILIHAN -->
                 <div class="lg:col-span-8 space-y-4">
-                    
-                    <!-- USER INFO & CHEAT INDICATOR -->
                     <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
                         <div class="flex items-center space-x-2">
                             <span class="w-8 h-8 rounded-full bg-sky-600 text-white font-bold flex items-center justify-center" id="user-avatar">U</span>
@@ -174,10 +163,7 @@
                         </div>
                     </div>
 
-                    <!-- KOTAK SOAL -->
                     <div class="bg-slate-900 p-5 sm:p-7 rounded-2xl border border-slate-800 shadow-lg space-y-5">
-                        
-                        <!-- Header Soal No & Ragu-Ragu -->
                         <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                             <span class="text-xs bg-sky-950 text-sky-300 border border-sky-800 font-bold px-3 py-1 rounded-full uppercase tracking-wider">
                                 SOAL <span id="current-question-num-lbl">1</span> DARI <span id="total-questions-lbl">140</span>
@@ -191,20 +177,15 @@
                             </label>
                         </div>
 
-                        <!-- Teks Soal Kontras Tinggi -->
                         <div>
                             <p id="question-text" class="text-base sm:text-lg font-medium leading-relaxed text-slate-100">
                                 Memuat teks soal...
                             </p>
                         </div>
 
-                        <!-- Opsi Jawaban (A-E) -->
-                        <div id="options-container" class="space-y-3">
-                            <!-- Injected dynamically -->
-                        </div>
+                        <div id="options-container" class="space-y-3"></div>
                     </div>
 
-                    <!-- TOMBOL NAVIGASI BOTTOM -->
                     <div class="flex justify-between items-center bg-slate-900 p-3.5 rounded-xl border border-slate-800">
                         <button id="btn-prev" onclick="navigateQuestion(-1)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-lg transition flex items-center space-x-1">
                             <i class="fa-solid fa-chevron-left mr-1"></i> Kembali
@@ -220,27 +201,21 @@
                     </div>
                 </div>
 
-                <!-- RIGHT SIDE: GEMINI-STYLE COLLAPSIBLE RAK SOAL (4 COLS DESKTOP) -->
+                <!-- RIGHT SIDE: RAK SOAL COLLAPSIBLE -->
                 <aside id="side-drawer" class="lg:col-span-4 bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl transition-all duration-300">
-                    
                     <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-3">
                         <div class="flex items-center space-x-2">
                             <i class="fa-solid fa-border-all text-sky-400"></i>
                             <span class="font-bold text-xs text-white uppercase tracking-wider">Rak Lembar Jawaban</span>
                         </div>
-                        <!-- Toggle Collapse Minimize Icon ala Gemini -->
                         <button onclick="toggleSidebar()" class="p-1.5 text-slate-400 hover:text-white rounded-lg bg-slate-800">
                             <i id="toggle-icon" class="fa-solid fa-angles-right text-xs"></i>
                         </button>
                     </div>
 
-                    <!-- Expanded Grid Area -->
                     <div id="drawer-content">
-                        <div id="questions-grid" class="grid grid-cols-5 gap-2 max-h-[320px] overflow-y-auto pr-1">
-                            <!-- Loop Generated via JS -->
-                        </div>
+                        <div id="questions-grid" class="grid grid-cols-5 gap-2 max-h-[320px] overflow-y-auto pr-1"></div>
 
-                        <!-- Color Legends -->
                         <div class="mt-4 pt-3 border-t border-slate-800 space-y-1.5 text-[11px] text-slate-400">
                             <div class="grid grid-cols-2 gap-2">
                                 <div class="flex items-center space-x-1.5">
@@ -259,13 +234,11 @@
                         </div>
                     </div>
 
-                    <!-- Minimized Badge View -->
                     <div id="minimized-badge" class="hidden py-4 text-center">
                         <span class="text-[10px] text-slate-400 block mb-1">SOAL AKTIF</span>
                         <span id="min-current-num" class="text-2xl font-black text-sky-400">1</span>
                     </div>
                 </aside>
-
             </div>
         </section>
 
@@ -275,14 +248,12 @@
                 <i class="fa-solid fa-circle-check"></i>
             </div>
             <h2 class="text-2xl font-bold text-white mb-1">Try Out Telah Selesai</h2>
-            <p class="text-xs text-slate-400 mb-6">Jawaban Anda berhasil diamankan dan disimpan ke database sistem.</p>
+            <p class="text-xs text-slate-400 mb-6">Jawaban Anda berhasil disimpan ke database sistem.</p>
 
-            <div id="report-category-breakdown" class="space-y-2 text-left bg-slate-800/60 p-4 rounded-xl border border-slate-800 text-xs mb-6">
-                <!-- Injected dynamically -->
-            </div>
+            <div id="report-category-breakdown" class="space-y-2 text-left bg-slate-800/60 p-4 rounded-xl border border-slate-800 text-xs mb-6"></div>
 
             <p class="text-xs text-sky-300 bg-sky-950/40 p-3 rounded-xl border border-sky-800 mb-6 text-left leading-relaxed">
-                <i class="fa-solid fa-info-circle mr-1"></i> Hasil ujian beserta analisis evaluasi kategori akan diumumkan secara <strong>DARING (ONLINE)</strong> oleh Admin setelah seluruh rangkaian ujian berakhir.
+                <i class="fa-solid fa-info-circle mr-1"></i> Hasil ujian beserta analisis evaluasi kategori akan diumumkan oleh Admin setelah seluruh rangkaian ujian berakhir.
             </p>
 
             <button onclick="logoutParticipant()" class="w-full py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs rounded-xl transition">
@@ -290,55 +261,115 @@
             </button>
         </section>
 
-        <!-- PAGE 5: ADMIN DASHBOARD -->
-        <section id="page-admin" class="w-full bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-2xl hidden">
-            <div class="flex justify-between items-center border-b border-slate-800 pb-4 mb-6">
+        <!-- PAGE 5: DASHBOARD ADMIN LENGKAP -->
+        <section id="page-admin" class="w-full bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-2xl hidden space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
                 <h2 class="text-lg font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-sliders text-amber-400"></i> Dashboard Kontrol Admin
+                    <i class="fa-solid fa-sliders text-amber-400"></i> Dashboard Kontrol Admin Complete
                 </h2>
-                <button onclick="goToPage('login')" class="px-3 py-1.5 bg-slate-800 text-slate-300 text-xs font-bold rounded-lg border border-slate-700">
+                <button onclick="goToPage('login')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-lg border border-slate-700">
                     Keluar Admin
                 </button>
             </div>
 
-            <div class="space-y-4">
+            <!-- KONFIGURASI UJIAN -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-800 space-y-3">
-                    <h3 class="text-xs font-bold text-slate-200 uppercase">Input / Replace Bank Soal (.txt / AI Format)</h3>
-                    <textarea id="ai-import-area" rows="8" class="w-full p-3 font-mono text-xs bg-slate-900 border border-slate-700 rounded-xl text-slate-200 focus:outline-none" placeholder="Format Masukan:
-1. Teks soal...
+                    <h3 class="text-xs font-bold text-sky-400 uppercase tracking-wider"><i class="fa-solid fa-gear mr-1"></i> Konfigurasi Sistem Ujian</h3>
+                    <div>
+                        <label class="block text-[11px] text-slate-400 mb-1">Nama Tim / Judul Ujian</label>
+                        <input type="text" id="cfg-exam-title" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[11px] text-slate-400 mb-1">Waktu Ujian (Menit)</label>
+                            <input type="number" id="cfg-exam-duration" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-400 mb-1">Token Ujian</label>
+                            <input type="text" id="cfg-exam-token" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-white font-mono">
+                        </div>
+                    </div>
+                    <button onclick="saveExamConfig()" class="w-full py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-lg">Simpan Konfigurasi</button>
+                </div>
+
+                <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-800 space-y-3">
+                    <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider"><i class="fa-solid fa-id-card mr-1"></i> Whitelist NIM Peserta</h3>
+                    <textarea id="cfg-whitelist-nim" rows="4" class="w-full p-2.5 font-mono text-xs bg-slate-900 border border-slate-700 rounded-lg text-slate-200" placeholder="Masukkan NIM terdaftar (pisahkan dengan koma atau baris baru). Kosongkan jika izin publik."></textarea>
+                    <button onclick="saveWhitelistNIM()" class="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-lg">Simpan Whitelist NIM</button>
+                </div>
+            </div>
+
+            <!-- ANALISIS DATA & EXPORT -->
+            <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-800 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider"><i class="fa-solid fa-chart-pie mr-1"></i> Data Analisis Nilai & Ekspor Hasil</h3>
+                    <button onclick="exportSubmissionsCSV()" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-lg flex items-center gap-1">
+                        <i class="fa-solid fa-file-csv"></i> Unduh Data Analisis (CSV)
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-900 text-slate-400 uppercase text-[10px]">
+                            <tr>
+                                <th class="p-2">Waktu</th>
+                                <th class="p-2">Nama</th>
+                                <th class="p-2">NIM</th>
+                                <th class="p-2">Skor</th>
+                                <th class="p-2">Benar/Total</th>
+                                <th class="p-2">Pelanggaran</th>
+                                <th class="p-2">Analisis Kategori</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-results-table-body" class="divide-y divide-slate-800"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- INPUT / BANK SOAL & PREVIEW -->
+            <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-800 space-y-4">
+                <h3 class="text-xs font-bold text-purple-400 uppercase tracking-wider"><i class="fa-solid fa-database mr-1"></i> Input Bank Soal & Preview</h3>
+                <textarea id="ai-import-area" rows="6" class="w-full p-3 font-mono text-xs bg-slate-900 border border-slate-700 rounded-xl text-slate-200" placeholder="Format Inject:
+1. Teks Soal...
 A. Pilihan A
 B. Pilihan B
 C. Pilihan C
 D. Pilihan D
 E. Pilihan E
 Kunci: B
-Kategori: Statistik"></textarea>
-                    
-                    <div class="flex justify-between items-center">
-                        <button onclick="processAIImport()" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-lg shadow">
-                            Generate / Inject Soal
-                        </button>
-                        <button onclick="clearAllQuestions()" class="text-xs text-red-400 font-bold hover:underline">
-                            Kosongkan Soal
-                        </button>
-                    </div>
+Kategori: Manajemen RM"></textarea>
+                
+                <div class="flex justify-between items-center">
+                    <button onclick="processAIImport()" class="px-4 py-2 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-lg shadow">
+                        Generate / Inject Soal
+                    </button>
+                    <button onclick="clearAllQuestions()" class="text-xs text-red-400 font-bold hover:underline">
+                        Kosongkan Bank Soal
+                    </button>
+                </div>
+
+                <!-- PREVIEW BANK SOAL -->
+                <div class="mt-4 pt-4 border-t border-slate-800">
+                    <h4 class="text-xs font-bold text-slate-300 mb-2">Preview Bank Soal Tersimpan (<span id="preview-count">0</span>):</h4>
+                    <div id="bank-soal-preview" class="max-h-60 overflow-y-auto space-y-2 text-xs text-slate-400 pr-2"></div>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <!-- FLOATING CALCULATOR BUTTON (KOTAK BESAR & HIGH PRIORITIY Z-INDEX) -->
-    <button id="calc-fab-btn" onclick="openCalculator()" class="bg-sky-600 hover:bg-sky-500 text-white w-14 h-14 rounded-2xl flex items-center justify-center text-2xl transition-transform active:scale-95 border-2 border-white/20" title="Kalkulator Statistik">
+    <!-- FLOATING CALCULATOR BUTTON (TERSEMBUNYI SAAT TIDAK UJIAN) -->
+    <button id="calc-fab-btn" onclick="openCalculator()" class="bg-sky-600 hover:bg-sky-500 text-white w-14 h-14 rounded-2xl flex items-center justify-center text-2xl transition-transform active:scale-95 border-2 border-white/20 hidden" title="Kalkulator Statistik">
         <i class="fa-solid fa-calculator"></i>
     </button>
 
-    <!-- POPUP KALKULATOR STATISTIK AKURAT -->
+    <!-- POPUP KALKULATOR -->
     <div id="calculator-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[9999999] flex items-center justify-center p-4 hidden">
         <div class="bg-slate-900 border border-slate-800 max-w-xs w-full p-4 rounded-2xl shadow-2xl space-y-3">
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
                 <span class="text-xs font-bold text-sky-400 flex items-center gap-2">
-                    <i class="fa-solid fa-calculator"></i> Kalkulator Statistik
+                    <i class="fa-solid fa-calculator"></i> Kalkulator Ujian
                 </span>
                 <button onclick="closeCalculator()" class="text-slate-400 hover:text-white text-lg">&times;</button>
             </div>
@@ -388,10 +419,17 @@ Kategori: Statistik"></textarea>
 
     <!-- APP ENGINE CODE -->
     <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7z_jz6PBxj4VOQZS7eVZCGeZxJr2PFDrDrFFF77g-n_HdsmkmTOd99XXWq6lr4NCM/exec"; // Target Spreadsheet: skripsihub@gmail.com
+        const ADMIN_CREDENTIALS = { username: "admin", password: "superadmin2026" };
+
         let appState = {
             currentPage: 'login',
+            examTitle: "Try Out UKOM RMIK Poltekun 2026",
             examDurationMinutes: 180,
             examToken: "UKOM2026",
+            whitelistNIM: [],
+            secretClickCount: 0,
+            
             currentUser: null,
             cheatWarnings: 0,
             isExamRunning: false,
@@ -413,29 +451,46 @@ Kategori: Statistik"></textarea>
             submissions: []
         };
 
-        const ADMIN_CREDENTIALS = { username: "admin", password: "superadmin2026" };
-
         window.onload = function() {
             loadStateFromStorage();
+            updateHeaderTitles();
             goToPage(appState.currentPage);
             setupAntiCheat();
         };
 
+        function updateHeaderTitles() {
+            document.getElementById('header-title').innerText = appState.examTitle;
+        }
+
+        function handleSecretTrigger() {
+            appState.secretClickCount++;
+            if (appState.secretClickCount >= 5) {
+                appState.secretClickCount = 0;
+                goToPage('admin-login');
+            }
+        }
+
         function saveStateToStorage() {
-            localStorage.setItem('TRYOUT_APP_STATE_UKOM_RMIK_V2', JSON.stringify({
+            localStorage.setItem('TRYOUT_APP_STATE_UKOM_RMIK_V3', JSON.stringify({
+                examTitle: appState.examTitle,
+                examDurationMinutes: appState.examDurationMinutes,
+                examToken: appState.examToken,
+                whitelistNIM: appState.whitelistNIM,
                 questions: appState.questions,
                 submissions: appState.submissions
             }));
         }
 
         function loadStateFromStorage() {
-            const data = localStorage.getItem('TRYOUT_APP_STATE_UKOM_RMIK_V2');
+            const data = localStorage.getItem('TRYOUT_APP_STATE_UKOM_RMIK_V3');
             if (data) {
                 try {
                     const parsed = JSON.parse(data);
-                    if (parsed.questions && parsed.questions.length > 0) {
-                        appState.questions = parsed.questions;
-                    }
+                    appState.examTitle = parsed.examTitle || appState.examTitle;
+                    appState.examDurationMinutes = parsed.examDurationMinutes || appState.examDurationMinutes;
+                    appState.examToken = parsed.examToken || appState.examToken;
+                    appState.whitelistNIM = parsed.whitelistNIM || [];
+                    if (parsed.questions && parsed.questions.length > 0) appState.questions = parsed.questions;
                     appState.submissions = parsed.submissions || [];
                 } catch (e) {}
             }
@@ -447,6 +502,12 @@ Kategori: Statistik"></textarea>
                 document.getElementById(`page-${p}`).classList.add('hidden');
             });
             document.getElementById(`page-${pageName}`).classList.remove('hidden');
+
+            const fab = document.getElementById('calc-fab-btn');
+            if (pageName === 'exam') fab.classList.remove('hidden');
+            else fab.classList.add('hidden');
+
+            if (pageName === 'admin') renderAdminDashboard();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -458,6 +519,11 @@ Kategori: Statistik"></textarea>
 
             if (token !== appState.examToken) {
                 alert("Token Ujian Salah!");
+                return;
+            }
+
+            if (appState.whitelistNIM.length > 0 && !appState.whitelistNIM.includes(nim)) {
+                alert("NIM Anda tidak terdaftar dalam Whitelist Peserta Ujian!");
                 return;
             }
 
@@ -650,7 +716,9 @@ Kategori: Statistik"></textarea>
             clearInterval(appState.timerInterval);
             closeSubmitConfirm();
 
+            let correctCount = 0;
             const categoryData = {};
+
             appState.questions.forEach((q, idx) => {
                 const cat = q.category || "Umum";
                 if (!categoryData[cat]) categoryData[cat] = { correct: 0, total: 0 };
@@ -658,9 +726,35 @@ Kategori: Statistik"></textarea>
 
                 const ans = appState.userAnswers[idx];
                 if (ans && ans.optionIndex === q.correctIndex) {
+                    correctCount++;
                     categoryData[cat].correct++;
                 }
             });
+
+            const totalQuestions = appState.questions.length;
+            const finalScore = totalQuestions > 0 ? ((correctCount / totalQuestions) * 100).toFixed(2) : 0;
+
+            const breakdownText = Object.keys(categoryData).map(cat => {
+                const info = categoryData[cat];
+                const pct = ((info.correct / info.total) * 100).toFixed(0);
+                return `${cat}: ${info.correct}/${info.total} (${pct}%)`;
+            }).join(" | ");
+
+            const submissionData = {
+                timestamp: new Date().toLocaleString('id-ID'),
+                fullName: appState.currentUser.name,
+                nim: appState.currentUser.nim,
+                finalScore: finalScore,
+                correctAnswers: correctCount,
+                totalQuestions: totalQuestions,
+                violations: appState.cheatWarnings,
+                loginTime: appState.currentUser.startTime,
+                categoryAnalysis: breakdownText
+            };
+
+            appState.submissions.push(submissionData);
+            saveStateToStorage();
+            sendToSpreadsheet(submissionData);
 
             const breakdown = document.getElementById('report-category-breakdown');
             breakdown.innerHTML = '<h4 class="font-bold text-white text-xs mb-2 border-b border-slate-700 pb-1">Evaluasi Per Kategori Soal:</h4>';
@@ -675,8 +769,17 @@ Kategori: Statistik"></textarea>
                 `;
             });
 
-            saveStateToStorage();
             goToPage('result');
+        }
+
+        function sendToSpreadsheet(data) {
+            if (!GOOGLE_SCRIPT_URL || GOOGLE_SCRIPT_URL.includes("EXAMPLE")) return;
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            }).catch(e => console.error(e));
         }
 
         function logoutParticipant() { goToPage('login'); }
@@ -709,7 +812,72 @@ Kategori: Statistik"></textarea>
             }
         }
 
-        // ADMIN AI PARSER ENGINE
+        // ADMIN ENGINE
+        function renderAdminDashboard() {
+            document.getElementById('cfg-exam-title').value = appState.examTitle;
+            document.getElementById('cfg-exam-duration').value = appState.examDurationMinutes;
+            document.getElementById('cfg-exam-token').value = appState.examToken;
+            document.getElementById('cfg-whitelist-nim').value = appState.whitelistNIM.join(', ');
+
+            const tbody = document.getElementById('admin-results-table-body');
+            tbody.innerHTML = "";
+            appState.submissions.forEach(s => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="p-2">${s.timestamp}</td>
+                        <td class="p-2 font-bold text-white">${s.fullName}</td>
+                        <td class="p-2">${s.nim}</td>
+                        <td class="p-2 font-bold text-emerald-400">${s.finalScore}</td>
+                        <td class="p-2">${s.correctAnswers}/${s.totalQuestions}</td>
+                        <td class="p-2 text-red-400 font-bold">${s.violations}</td>
+                        <td class="p-2 text-[10px] text-slate-400">${s.categoryAnalysis}</td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('preview-count').innerText = appState.questions.length;
+            const previewContainer = document.getElementById('bank-soal-preview');
+            previewContainer.innerHTML = "";
+            appState.questions.forEach((q, i) => {
+                previewContainer.innerHTML += `
+                    <div class="p-2 bg-slate-900 rounded border border-slate-800">
+                        <strong class="text-slate-200">${i+1}. ${q.text.substring(0, 80)}...</strong>
+                        <div class="text-[10px] text-sky-400 mt-0.5">Kunci: ${["A","B","C","D","E"][q.correctIndex]} | Kategori: ${q.category}</div>
+                    </div>
+                `;
+            });
+        }
+
+        function saveExamConfig() {
+            appState.examTitle = document.getElementById('cfg-exam-title').value.trim();
+            appState.examDurationMinutes = parseInt(document.getElementById('cfg-exam-duration').value) || 180;
+            appState.examToken = document.getElementById('cfg-exam-token').value.trim();
+            updateHeaderTitles();
+            saveStateToStorage();
+            alert("Konfigurasi Ujian Berhasil Disimpan!");
+        }
+
+        function saveWhitelistNIM() {
+            const raw = document.getElementById('cfg-whitelist-nim').value;
+            appState.whitelistNIM = raw.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+            saveStateToStorage();
+            alert(`Whitelist NIM Berhasil Disimpan (${appState.whitelistNIM.length} NIM)!`);
+        }
+
+        function exportSubmissionsCSV() {
+            if (appState.submissions.length === 0) return alert("Belum ada data nilai!");
+            let csv = "Waktu Kirim,Nama Lengkap,NIM,Skor Akhir,Jawaban Benar,Total Soal,Jumlah Pelanggaran,Waktu Mulai Login,Analisis Persentase Kategori\n";
+            appState.submissions.forEach(s => {
+                csv += `"${s.timestamp}","${s.fullName}","${s.nim}",${s.finalScore},${s.correctAnswers},${s.totalQuestions},${s.violations},"${s.loginTime}","${s.categoryAnalysis}"\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Analisis_Nilai_UKOM_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+        }
+
         function processAIImport() {
             const text = document.getElementById('ai-import-area').value.trim();
             if (!text) return alert("Tempel teks soal terlebih dahulu!");
@@ -757,11 +925,13 @@ Kategori: Statistik"></textarea>
             saveStateToStorage();
             alert(`Berhasil mengimpor ${parsedQuestions.length} soal!`);
             document.getElementById('ai-import-area').value = "";
+            renderAdminDashboard();
         }
 
         function clearAllQuestions() {
             appState.questions = [];
             saveStateToStorage();
+            renderAdminDashboard();
             alert("Bank soal dikosongkan!");
         }
     </script>
