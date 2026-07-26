@@ -555,7 +555,7 @@ Kategori: Manajemen RM"></textarea>
 
     <!-- LOGIKA JAVASCRIPT UTAMA -->
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7z_jz6PBxj4VOQZS7eVZCGeZxJr2PFDrDrFFF77g-n_HdsmkmTOd99XXWq6lr4NCM/exec"; 
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzqWXwseTUnnZjvC2Qbhq9fsgjw2a0bfplaVtYCegfXc4u13q0XQ1FTyDwA6Kcfft6B/exec"; 
         const ADMIN_CREDENTIALS = { username: "admin", password: "superadmin2026" };
 
         let appState = {
@@ -647,7 +647,7 @@ Kategori: Manajemen RM"></textarea>
                 await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify(payload)
                 });
                 showInlineToast('admin-toast-msg', "BERHASIL! Data Token, Whitelist, & Bank Soal tersinkron ke Cloud. Semua device peserta siap login!", true);
@@ -1095,7 +1095,7 @@ Kategori: Manajemen RM"></textarea>
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify(data)
             }).catch(e => console.error(e));
         }
