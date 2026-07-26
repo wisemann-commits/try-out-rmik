@@ -555,7 +555,7 @@ Kategori: Manajemen RM"></textarea>
 
     <!-- LOGIKA JAVASCRIPT UTAMA -->
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzqWXwseTUnnZjvC2Qbhq9fsgjw2a0bfplaVtYCegfXc4u13q0XQ1FTyDwA6Kcfft6B/exec"; 
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzTeKerupyNIdejY_Xo-8a2aJrNEG-i8z5ArtUpAoP_3yT0Ff9vcD82wXqIrS8U69QB/exec"; 
         const ADMIN_CREDENTIALS = { username: "admin", password: "superadmin2026" };
 
         let appState = {
@@ -648,12 +648,17 @@ Kategori: Manajemen RM"></textarea>
             };
 
             try {
+                // Pengiriman Form-Encoded Kebal Redirect HP
+                const formBody = new URLSearchParams();
+                formBody.append('payload', JSON.stringify(payload));
+
                 await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain' },
-                    body: JSON.stringify(payload)
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                    body: formBody.toString()
                 });
+                
                 showInlineToast('admin-toast-msg', "BERHASIL! Data Token, Whitelist, & Bank Soal tersinkron ke Cloud. Semua device peserta & admin siap!", true);
             } catch(e) {
                 console.error("Cloud push error:", e);
@@ -1107,11 +1112,14 @@ Kategori: Manajemen RM"></textarea>
 
         function sendToSpreadsheet(data) {
             if (!GOOGLE_SCRIPT_URL) return;
+            const formBody = new URLSearchParams();
+            formBody.append('payload', JSON.stringify(data));
+
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify(data)
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                body: formBody.toString()
             }).catch(e => console.error(e));
         }
 
