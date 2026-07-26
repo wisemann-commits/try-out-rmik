@@ -375,6 +375,17 @@
             <!-- PESAN TOAST KONTROL ADMIN -->
             <div id="admin-toast-msg" class="hidden text-xs font-bold p-3 rounded-xl border text-center"></div>
 
+            <!-- TOMBOL SINKRONISASI MANUAL CLOUD -->
+            <div class="bg-sky-950/40 border border-sky-800 p-3.5 rounded-xl flex justify-between items-center">
+                <div>
+                    <h4 class="text-xs font-bold text-sky-400">Sinkronisasi Cloud Terpusat</h4>
+                    <p class="text-[11px] text-slate-400">Tekan tombol ini setelah mengatur Token & Bank Soal agar tersinkron ke semua HP peserta.</p>
+                </div>
+                <button onclick="pushCloudConfig()" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-lg shadow flex items-center gap-1.5">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Sinkronkan Soal & Token
+                </button>
+            </div>
+
             <!-- KONFIGURASI SISTEM UJIAN -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-800 space-y-3">
@@ -589,7 +600,61 @@ Kategori: Manajemen RM"></textarea>
             updateHeaderTitles();
             goToPage(appState.currentPage);
             setupAntiCheat();
+            fetchCloudConfig();
         };
+
+        async function fetchCloudConfig() {
+            if (!GOOGLE_SCRIPT_URL) return;
+            try {
+                const res = await fetch(GOOGLE_SCRIPT_URL + "?action=getConfig");
+                if (res.ok) {
+                    const text = await res.clone().text();
+                    if (text && text.trim().startsWith("{")) {
+                        const data = JSON.parse(text);
+                        if (data && data.examToken) {
+                            if (data.examTitle) appState.examTitle = data.examTitle;
+                            if (data.examDurationMinutes) appState.examDurationMinutes = Number(data.examDurationMinutes);
+                            if (data.examToken) appState.examToken = data.examToken;
+                            if (data.maxViolationsAllowed) appState.maxViolationsAllowed = Number(data.maxViolationsAllowed);
+                            if (Array.isArray(data.whitelistNIM)) appState.whitelistNIM = data.whitelistNIM;
+                            if (Array.isArray(data.questions) && data.questions.length > 0) appState.questions = data.questions;
+                            
+                            updateHeaderTitles();
+                            saveStateToStorage();
+                        }
+                    }
+                }
+            } catch (e) {
+                console.log("Cloud sync fallback local:", e);
+            }
+        }
+
+        function pushCloudConfig() {
+            if (!GOOGLE_SCRIPT_URL) return;
+            const payload = {
+                action: "saveConfig",
+                config: {
+                    examTitle: appState.examTitle,
+                    examDurationMinutes: appState.examDurationMinutes,
+                    examToken: appState.examToken,
+                    maxViolationsAllowed: appState.maxViolationsAllowed,
+                    whitelistNIM: appState.whitelistNIM,
+                    questions: appState.questions
+                }
+            };
+
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(() => {
+                showInlineToast('admin-toast-msg', "Sinkronisasi Cloud Sukses! Data Token & Soal diperbarui untuk semua peserta.", true);
+            }).catch(e => {
+                console.error("Cloud push error:", e);
+                showInlineToast('admin-toast-msg', "Gagal tersambung ke Cloud.");
+            });
+        }
 
         function toggleTheme() {
             const isLight = document.body.classList.toggle('light-mode');
@@ -693,10 +758,12 @@ Kategori: Manajemen RM"></textarea>
             e.preventDefault();
             const name = document.getElementById('login-name').value.trim();
             const nim = document.getElementById('login-nim').value.trim();
-            const token = document.getElementById('login-token').value.trim().toUpperCase();
+            const rawToken = document.getElementById('login-token').value.trim();
+            const inputToken = rawToken.toUpperCase().replace(/\s+/g, '');
+            const validToken = appState.examToken.trim().toUpperCase().replace(/\s+/g, '');
 
-            if (token !== appState.examToken.toUpperCase()) {
-                showInlineToast('login-status-msg', "Token Ujian tidak valid!");
+            if (inputToken !== validToken) {
+                showInlineToast('login-status-msg', "Token Ujian tidak valid! Periksa token yang diberikan Admin.");
                 return;
             }
 
@@ -710,10 +777,15 @@ Kategori: Manajemen RM"></textarea>
                 return;
             }
 
-            appState.currentUser = { name, nim, startTime: new Date().toLocaleTimeString() };
+            if (!appState.questions || appState.questions.length === 0) {
+                showInlineToast('login-status-msg', "Bank soal belum tersedia. Silakan hubungi Admin.");
+                return;
+            }
+
+            appState.currentUser = { name, nim, startTime: new Date().toLocaleTimeString('id-ID') };
             
             document.getElementById('rules-verified-info').innerText = `${name} (${nim})`;
-            document.getElementById('rules-verified-token').innerText = token;
+            document.getElementById('rules-verified-token').innerText = rawToken;
             document.getElementById('rules-max-viol').innerText = appState.maxViolationsAllowed;
             goToPage('rules');
         }
@@ -1095,7 +1167,8 @@ Kategori: Manajemen RM"></textarea>
             
             updateHeaderTitles();
             saveStateToStorage();
-            showInlineToast('admin-toast-msg', "Konfigurasi Ujian Berhasil Disimpan!", true);
+            pushCloudConfig();
+            showInlineToast('admin-toast-msg', "Konfigurasi Ujian Berhasil Disimpan & Disinkronkan ke Cloud!", true);
         }
 
         function generateNIMRangeHelper() {
@@ -1112,7 +1185,8 @@ Kategori: Manajemen RM"></textarea>
             const raw = document.getElementById('cfg-whitelist-nim').value;
             appState.whitelistNIM = raw.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
             saveStateToStorage();
-            showInlineToast('admin-toast-msg', `Whitelist NIM Disimpan (${appState.whitelistNIM.length} NIM)!`, true);
+            pushCloudConfig();
+            showInlineToast('admin-toast-msg', `Whitelist NIM Disimpan (${appState.whitelistNIM.length} NIM) & Disinkronkan!`, true);
         }
 
         function exportSubmissionsCSV() {
@@ -1209,7 +1283,8 @@ Kategori: Manajemen RM"></textarea>
 
             appState.questions = parsedQuestions;
             saveStateToStorage();
-            showInlineToast('admin-toast-msg', `Berhasil mengimpor ${parsedQuestions.length} soal!`, true);
+            pushCloudConfig();
+            showInlineToast('admin-toast-msg', `Berhasil mengimpor ${parsedQuestions.length} soal & Disinkronkan ke Cloud!`, true);
             document.getElementById('ai-import-area').value = "";
             renderAdminDashboard();
         }
@@ -1217,6 +1292,7 @@ Kategori: Manajemen RM"></textarea>
         function clearAllQuestions() {
             appState.questions = [];
             saveStateToStorage();
+            pushCloudConfig();
             renderAdminDashboard();
             showInlineToast('admin-toast-msg', "Bank soal berhasil dikosongkan!");
         }
