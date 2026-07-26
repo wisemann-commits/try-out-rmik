@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Try Out UKOM RMIK Poltekun 2026</title>
     
-    <!-- Mencegah Caching Layar -->
+    <!-- Mencegah Caching Halaman Browser -->
     <script>
         try {
             if ('serviceWorker' in navigator) {
@@ -66,7 +66,7 @@
             box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5) !important;
         }
 
-        /* Gaya Khusus Mode Terang */
+        /* Mode Terang Override */
         body.light-mode {
             background-color: #f8fafc !important;
             color: #0f172a !important;
@@ -104,7 +104,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans unselectable">
 
-    <!-- HEADER NAVIGATION BAR -->
+    <!-- HEADER TOP BAR -->
     <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-md">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <!-- PINTU MASUK ADMIN TERSEMBUNYI: Klik 5x pada logo / judul -->
@@ -126,7 +126,7 @@
         </div>
     </header>
 
-    <!-- AREA KONTEN UTAMA -->
+    <!-- KONTEN UTAMA -->
     <main class="flex-grow max-w-7xl w-full mx-auto p-3 sm:p-5 flex flex-col justify-center">
         
         <!-- HALAMAN 1: FORM LOGIN PESERTA -->
@@ -152,13 +152,13 @@
                     <label class="block text-xs font-semibold text-slate-300 mb-1">Token Ujian</label>
                     <input type="text" id="login-token" required placeholder="Masukkan Token" class="w-full px-3.5 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white font-mono tracking-wider focus:outline-none focus:border-sky-500">
                 </div>
-                <button type="submit" class="w-full py-3 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-xl shadow-lg transition text-sm">
-                    Masuk <i class="fa-solid fa-arrow-right ml-1"></i>
+                <button type="submit" id="btn-login-submit" class="w-full py-3 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-xl shadow-lg transition text-sm flex items-center justify-center gap-2">
+                    <span>Masuk</span> <i class="fa-solid fa-arrow-right ml-1"></i>
                 </button>
             </form>
         </section>
 
-        <!-- HALAMAN 1.5: INFORMASI TATA TERTIB -->
+        <!-- HALAMAN 1.5: HALAMAN TATA TERTIB -->
         <section id="page-rules" class="max-w-2xl w-full mx-auto bg-slate-900 p-6 sm:p-8 rounded-2xl border border-slate-800 shadow-2xl space-y-6 hidden">
             <div class="border-b border-slate-800 pb-3 flex items-center gap-3">
                 <i class="fa-solid fa-shield-cat text-2xl text-amber-400"></i>
@@ -221,7 +221,7 @@
 
         <!-- HALAMAN 3: RUANG UJIAN PESERTA -->
         <section id="page-exam" class="w-full hidden">
-            <!-- PENUNJUK WAKTU UJIAN -->
+            <!-- TIMER -->
             <div class="w-full bg-slate-900 border-2 border-sky-500/50 rounded-2xl p-4 mb-4 text-center shadow-xl flex flex-col items-center justify-center">
                 <span class="text-[11px] font-bold text-sky-400 uppercase tracking-widest block mb-1">
                     <i class="fa-regular fa-clock mr-1 animate-spin"></i> Sisa Waktu Pengerjaan Ujian
@@ -232,7 +232,7 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 w-full items-start">
-                <!-- PANEL LEMBAR SOAL UTAMA -->
+                <!-- AREA SOAL & OPSI -->
                 <div class="lg:col-span-8 space-y-4">
                     <div class="bg-slate-900 p-3.5 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
                         <div class="flex items-center space-x-2">
@@ -248,7 +248,6 @@
                     </div>
 
                     <div class="bg-slate-900 p-5 sm:p-7 rounded-2xl border border-slate-800 shadow-lg space-y-4">
-                        <!-- NOMOR SOAL DAN KATEGORI -->
                         <div class="border-b border-slate-800 pb-3">
                             <div class="flex justify-between items-center">
                                 <span class="text-[11px] bg-sky-950 text-sky-300 border border-sky-800 font-bold px-3 py-1 rounded-full uppercase tracking-wider">
@@ -292,7 +291,7 @@
                     </div>
                 </div>
 
-                <!-- PANEL NAVIGASI RAK SOAL (DESKTOP STICKY) -->
+                <!-- RAK SOAL DESKTOP STICKY -->
                 <aside id="side-drawer" class="lg:col-span-4 bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl transition-all duration-300 lg:sticky lg:top-20">
                     <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-3">
                         <div class="flex items-center space-x-2">
@@ -333,7 +332,7 @@
             </div>
         </section>
 
-        <!-- HALAMAN 4: KONFIRMASI SELESAI PESERTA -->
+        <!-- HALAMAN 4: KONFIRMASI SELESAI -->
         <section id="page-result" class="max-w-lg w-full mx-auto bg-slate-900 p-8 rounded-2xl border border-slate-800 text-center shadow-2xl hidden">
             <div id="result-icon-container" class="w-16 h-16 bg-emerald-950 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
                 <i class="fa-solid fa-circle-check"></i>
@@ -361,7 +360,7 @@
             </button>
         </section>
 
-        <!-- HALAMAN 5: PANEL KONTROL ADMINISTRATOR -->
+        <!-- HALAMAN 5: DASHBOARD ADMIN -->
         <section id="page-admin" class="w-full bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-2xl hidden space-y-6">
             <div class="flex justify-between items-center border-b border-slate-800 pb-4">
                 <h2 class="text-lg font-bold text-white flex items-center gap-2">
@@ -372,21 +371,18 @@
                 </button>
             </div>
 
-            <!-- PESAN TOAST KONTROL ADMIN -->
             <div id="admin-toast-msg" class="hidden text-xs font-bold p-3 rounded-xl border text-center"></div>
 
-            <!-- TOMBOL SINKRONISASI MANUAL CLOUD -->
             <div class="bg-sky-950/40 border border-sky-800 p-3.5 rounded-xl flex justify-between items-center">
                 <div>
                     <h4 class="text-xs font-bold text-sky-400">Sinkronisasi Cloud Terpusat</h4>
-                    <p class="text-[11px] text-slate-400">Tekan tombol ini setelah mengatur Token & Bank Soal agar tersinkron ke semua HP peserta.</p>
+                    <p class="text-[11px] text-slate-400">Tekan tombol ini setelah mengatur Token & Bank Soal agar tersinkron ke semua HP/Laptop peserta.</p>
                 </div>
                 <button onclick="pushCloudConfig()" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-lg shadow flex items-center gap-1.5">
                     <i class="fa-solid fa-cloud-arrow-up"></i> Sinkronkan Soal & Token
                 </button>
             </div>
 
-            <!-- KONFIGURASI SISTEM UJIAN -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-800 space-y-3">
                     <h3 class="text-xs font-bold text-sky-400 uppercase tracking-wider"><i class="fa-solid fa-gear mr-1"></i> Konfigurasi Sistem Ujian</h3>
@@ -422,7 +418,7 @@
                 </div>
             </div>
 
-            <!-- ANALISIS DATA DAN UNDUH HASIL -->
+            <!-- ANALISIS & EKSPOR HASIL -->
             <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-800 space-y-4">
                 <div class="flex justify-between items-center">
                     <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider"><i class="fa-solid fa-chart-pie mr-1"></i> Data Analisis Nilai & Ekspor Hasil (Khusus Admin)</h3>
@@ -449,7 +445,7 @@
                 </div>
             </div>
 
-            <!-- MANAJEMEN BANK SOAL -->
+            <!-- MANAJEMEN SOAL -->
             <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-800 space-y-4">
                 <h3 class="text-xs font-bold text-purple-400 uppercase tracking-wider"><i class="fa-solid fa-database mr-1"></i> Input Bank Soal & Preview</h3>
                 <textarea id="ai-import-area" rows="6" class="w-full p-3 font-mono text-xs bg-slate-900 border border-slate-700 rounded-xl text-slate-200" placeholder="Format Inject:
@@ -480,12 +476,12 @@ Kategori: Manajemen RM"></textarea>
 
     </main>
 
-    <!-- TOMBOL POPUP KALKULATOR -->
+    <!-- FLOATING KALKULATOR -->
     <button id="calc-fab-btn" onclick="openCalculator()" class="bg-sky-600 hover:bg-sky-500 text-white w-14 h-14 rounded-2xl flex items-center justify-center text-2xl transition-transform active:scale-95 border-2 border-white/20 hidden" title="Kalkulator Ujian">
         <i class="fa-solid fa-calculator"></i>
     </button>
 
-    <!-- POPUP KALKULATOR UJIAN -->
+    <!-- MODAL KALKULATOR -->
     <div id="calculator-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[9999999] flex items-center justify-center p-4 hidden">
         <div class="bg-slate-900 border border-slate-800 max-w-xs w-full p-4 rounded-2xl shadow-2xl space-y-3">
             <div class="flex justify-between items-center pb-2 border-b border-slate-800">
@@ -525,7 +521,7 @@ Kategori: Manajemen RM"></textarea>
         </div>
     </div>
 
-    <!-- MODAL POPUP PERINGATAN PELANGGARAN -->
+    <!-- MODAL PELANGGARAN -->
     <div id="violation-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999999] flex items-center justify-center p-4 hidden">
         <div class="bg-slate-900 border-2 border-red-600 max-w-sm w-full p-6 rounded-2xl text-center shadow-2xl space-y-4">
             <div class="w-14 h-14 bg-red-950 text-red-500 rounded-full flex items-center justify-center text-3xl mx-auto border border-red-800 animate-pulse">
@@ -557,7 +553,7 @@ Kategori: Manajemen RM"></textarea>
         </div>
     </div>
 
-    <!-- MESIN UTAMA JAVASCRIPT -->
+    <!-- LOGIKA JAVASCRIPT UTAMA -->
     <script>
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby7z_jz6PBxj4VOQZS7eVZCGeZxJr2PFDrDrFFF77g-n_HdsmkmTOd99XXWq6lr4NCM/exec"; 
         const ADMIN_CREDENTIALS = { username: "admin", password: "superadmin2026" };
@@ -604,33 +600,37 @@ Kategori: Manajemen RM"></textarea>
         };
 
         async function fetchCloudConfig() {
-            if (!GOOGLE_SCRIPT_URL) return;
+            if (!GOOGLE_SCRIPT_URL) return false;
             try {
-                const res = await fetch(GOOGLE_SCRIPT_URL + "?action=getConfig");
+                const res = await fetch(GOOGLE_SCRIPT_URL + "?action=getConfig&_t=" + Date.now());
                 if (res.ok) {
-                    const text = await res.clone().text();
-                    if (text && text.trim().startsWith("{")) {
+                    const text = await res.text();
+                    if (text && (text.trim().startsWith("{") || text.trim().startsWith("["))) {
                         const data = JSON.parse(text);
                         if (data && data.examToken) {
                             if (data.examTitle) appState.examTitle = data.examTitle;
                             if (data.examDurationMinutes) appState.examDurationMinutes = Number(data.examDurationMinutes);
-                            if (data.examToken) appState.examToken = data.examToken;
+                            if (data.examToken) appState.examToken = String(data.examToken).trim();
                             if (data.maxViolationsAllowed) appState.maxViolationsAllowed = Number(data.maxViolationsAllowed);
                             if (Array.isArray(data.whitelistNIM)) appState.whitelistNIM = data.whitelistNIM;
                             if (Array.isArray(data.questions) && data.questions.length > 0) appState.questions = data.questions;
                             
                             updateHeaderTitles();
                             saveStateToStorage();
+                            return true;
                         }
                     }
                 }
             } catch (e) {
                 console.log("Cloud sync fallback local:", e);
             }
+            return false;
         }
 
-        function pushCloudConfig() {
+        async function pushCloudConfig() {
             if (!GOOGLE_SCRIPT_URL) return;
+            showInlineToast('admin-toast-msg', "Mengirim data Soal & Token ke Cloud Spreadsheet...", true);
+            
             const payload = {
                 action: "saveConfig",
                 config: {
@@ -643,17 +643,18 @@ Kategori: Manajemen RM"></textarea>
                 }
             };
 
-            fetch(GOOGLE_SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            }).then(() => {
-                showInlineToast('admin-toast-msg', "Sinkronisasi Cloud Sukses! Data Token & Soal diperbarui untuk semua peserta.", true);
-            }).catch(e => {
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                showInlineToast('admin-toast-msg', "BERHASIL! Data Token, Whitelist, & Bank Soal tersinkron ke Cloud. Semua device peserta siap login!", true);
+            } catch(e) {
                 console.error("Cloud push error:", e);
-                showInlineToast('admin-toast-msg', "Gagal tersambung ke Cloud.");
-            });
+                showInlineToast('admin-toast-msg', "Gagal terhubung ke Cloud Spreadsheet.");
+            }
         }
 
         function toggleTheme() {
@@ -697,7 +698,7 @@ Kategori: Manajemen RM"></textarea>
             } else {
                 el.classList.add('bg-red-950/80', 'text-red-300', 'border-red-800');
             }
-            setTimeout(() => { el.classList.add('hidden'); }, 4000);
+            setTimeout(() => { el.classList.add('hidden'); }, 4500);
         }
 
         function handleSecretTrigger() {
@@ -754,16 +755,29 @@ Kategori: Manajemen RM"></textarea>
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function handleLogin(e) {
+        async function handleLogin(e) {
             e.preventDefault();
             const name = document.getElementById('login-name').value.trim();
             const nim = document.getElementById('login-nim').value.trim();
             const rawToken = document.getElementById('login-token').value.trim();
-            const inputToken = rawToken.toUpperCase().replace(/\s+/g, '');
-            const validToken = appState.examToken.trim().toUpperCase().replace(/\s+/g, '');
+            
+            const normalize = (str) => String(str || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+            const inputToken = normalize(rawToken);
 
-            if (inputToken !== validToken) {
-                showInlineToast('login-status-msg', "Token Ujian tidak valid! Periksa token yang diberikan Admin.");
+            showInlineToast('login-status-msg', "Memverifikasi data token dari server cloud...", true);
+
+            // Fetch cloud config saat login
+            await fetchCloudConfig();
+
+            const validToken = normalize(appState.examToken);
+
+            if (!inputToken) {
+                showInlineToast('login-status-msg', "Harap masukkan Token Ujian!");
+                return;
+            }
+
+            if (inputToken !== validToken && validToken !== "") {
+                showInlineToast('login-status-msg', "Token Ujian tidak valid! Periksa kembali token dari Admin.");
                 return;
             }
 
@@ -778,7 +792,7 @@ Kategori: Manajemen RM"></textarea>
             }
 
             if (!appState.questions || appState.questions.length === 0) {
-                showInlineToast('login-status-msg', "Bank soal belum tersedia. Silakan hubungi Admin.");
+                showInlineToast('login-status-msg', "Bank soal belum tersedia di server cloud. Hubungi Admin.");
                 return;
             }
 
@@ -1168,7 +1182,6 @@ Kategori: Manajemen RM"></textarea>
             updateHeaderTitles();
             saveStateToStorage();
             pushCloudConfig();
-            showInlineToast('admin-toast-msg', "Konfigurasi Ujian Berhasil Disimpan & Disinkronkan ke Cloud!", true);
         }
 
         function generateNIMRangeHelper() {
@@ -1186,7 +1199,6 @@ Kategori: Manajemen RM"></textarea>
             appState.whitelistNIM = raw.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
             saveStateToStorage();
             pushCloudConfig();
-            showInlineToast('admin-toast-msg', `Whitelist NIM Disimpan (${appState.whitelistNIM.length} NIM) & Disinkronkan!`, true);
         }
 
         function exportSubmissionsCSV() {
@@ -1284,7 +1296,6 @@ Kategori: Manajemen RM"></textarea>
             appState.questions = parsedQuestions;
             saveStateToStorage();
             pushCloudConfig();
-            showInlineToast('admin-toast-msg', `Berhasil mengimpor ${parsedQuestions.length} soal & Disinkronkan ke Cloud!`, true);
             document.getElementById('ai-import-area').value = "";
             renderAdminDashboard();
         }
@@ -1294,7 +1305,6 @@ Kategori: Manajemen RM"></textarea>
             saveStateToStorage();
             pushCloudConfig();
             renderAdminDashboard();
-            showInlineToast('admin-toast-msg', "Bank soal berhasil dikosongkan!");
         }
     </script>
 </body>
