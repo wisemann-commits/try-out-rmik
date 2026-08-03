@@ -602,10 +602,10 @@ Kategori: Manajemen RM"></textarea>
             sessionQuestions: [],
             questions: [
                 {
-                    text: "Seorang pasien lama datang ke TPPRI memerlukan rawat inap. Petugas rekam medis mencari berkas lama. Apakah sistem penataan rekam medis yang digunakan jika berkas rawat jalan dan rawat inap disatu tempatkan?",
-                    options: ["Integrated System", "Unit System", "Serial System", "Serial Unit System", "Straight System"],
-                    correctIndex: 1,
-                    category: "Manajemen RM"
+                    text: "Seorang PMIK di bagian pendaftaran rawat jalan diminta oleh seorang staf kepo memberikan fotokopi berkas rekam medis seorang pasien korban penganiayaan tanpa membawa Surat Kepolisian dan Visum et Repertum resmi. Polisi beralasan berkas sangat mendesak untuk proses penyidikan. Apakah tindakan berlandaskan etika dan hukum profesi yang paling tepat dilakukan oleh PMIK tersebut?",
+                    options: ["Meminta staf kepolisian membayar biaya administrasi penarikan berkas sebelum dokumen diserahkan secara personal", "Menyerahkan fotokopi berkas rekam medis secara langsung karena polisi merupakan aparat penegak hukum yang wajib dibantu demi kelancaran penyidikan", "Menolak permohonan tersebut secara sopan dan menjelaskan prosedur permohonan pelepasan informasi medis untuk kepentingan hukum yang wajib disertai surat permintaan resmi penyidik", "Meminta staf kepolisian menunggu di ruang tunggu sementara PMIK menghubungi keluarga pasien melalui telepon untuk meminta izin lisan", "Mengarahkan staf kepolisian untuk menemui dokter DPJP di poliklinik agar diberikan ringkasan rekam medis secara lisan tanpa dokumen"],
+                    correctIndex: 2,
+                    category: "Hukum & Etika Kesehatan"
                 }
             ],
             
@@ -1402,38 +1402,40 @@ Kategori: Manajemen RM"></textarea>
             showInlineToast('admin-toast-msg', `Berhasil mengonversi ${structuredList.length} soal ke format baku urut! Klik "Generate / Inject Soal" untuk menyimpan.`, true);
         }
 
-        // PARSER SUPER SANGAT FLEKSIBEL (KHUSUS FORMAT WORD / DENGAN / TANPA NOMOR AWA L)
+        // PARSER HANDAL DAN TEPAT UNTUK SOAL VINYET / DOCX DENGAN / TANPA BARIS BARU
         function parseFlexibleTextToObjects(text) {
             if (!text) return [];
 
             const parsedQuestions = [];
-            
-            // Bersihkan teks dari karakter kontrol tak terlihat
-            const cleanedText = text.replace(/\r/g, "");
+            // Normalisasi baris baru & hapus tag pengganti otomatis
+            const cleanedText = text.replace(/\r/g, "").replace(/\[source:\s*\d+\]/gi, "");
 
-            // Strategi 1: Pisahkan berdasarkan pola kemunculan Kunci + Kategori (Paling Akurat untuk Word)
-            const questionBlocks = [];
-            const blockRegex = /([\s\S]*?Kunci\s*:[\s\S]*?Kategori\s*:[^\n]*)/gi;
+            // Pemisahan berdasarkan blok boundary Kategori:
+            const blockRegex = /([\s\S]*?Kategori\s*:[^\n]*)/gi;
+            let blocks = [];
             let match;
 
             while ((match = blockRegex.exec(cleanedText)) !== null) {
-                questionBlocks.push(match[1].trim());
+                blocks.push(match[1].trim());
             }
 
-            // Fallback Strategi 2: Jika regex Kategori tidak terpisah sempurna, pisahkan per spasi ganda / baris kosong
-            const finalBlocks = questionBlocks.length > 0 ? questionBlocks : cleanedText.split(/\n\s*\n/);
+            if (blocks.length === 0) {
+                blocks = cleanedText.split(/\n\s*\n/);
+            }
 
-            finalBlocks.forEach(block => {
+            blocks.forEach(block => {
                 if (!block.trim()) return;
 
-                let lines = block.split('\n').map(l => l.trim()).filter(Boolean);
-                
-                // Jika file Word menggabungkan baris tanpa \n, lakukan pemisahan berbasis keyword Opsi/Kunci/Kategori
-                if (lines.length === 1) {
-                    const lineStr = lines[0];
-                    const splitRegex = /(?=\b[A-E][\.\)]\s+|\bKunci\s*:|\bKategori\s*:)/gi;
-                    lines = lineStr.split(splitRegex).map(l => l.trim()).filter(Boolean);
-                }
+                // Pisahkan setiap elemen kunci dari string jika terurai tanpa \n
+                let rawLines = block.split('\n').map(l => l.trim()).filter(Boolean);
+                let lines = [];
+
+                rawLines.forEach(l => {
+                    const parts = l.split(/(?=\b[A-E]\.\s+|\bKunci\s*:|\bKategori\s*:)/i);
+                    parts.forEach(p => {
+                        if (p.trim()) lines.push(p.trim());
+                    });
+                });
 
                 if (lines.length < 2) return;
 
@@ -1443,11 +1445,8 @@ Kategori: Manajemen RM"></textarea>
                 let category = "Umum";
 
                 lines.forEach(line => {
-                    // Deteksi Opsi A-E
                     const optionMatch = line.match(/^\s*\(?([A-E])[\.\)\:\-]\s*(.*)/i);
-                    // Deteksi Kunci Jawaban
                     const keyMatch = line.match(/^Kunci\s*:?\s*([A-E])/i);
-                    // Deteksi Kategori
                     const categoryMatch = line.match(/^Kategori\s*:?\s*(.*)/i);
 
                     if (optionMatch) {
@@ -1461,7 +1460,7 @@ Kategori: Manajemen RM"></textarea>
                         const catVal = categoryMatch[1].trim();
                         if (catVal) category = catVal;
                     } else {
-                        // Jika bukan Opsi/Kunci/Kategori, anggap bagian dari Teks Soal
+                        // Hilangkan nomor bawaan lama di awal soal (contoh "1.", "Soal 1", "12.")
                         const cleanLine = line.replace(/^\s*(?:Soal|No|Nomor)?\s*\d+[\.\)\:\-]\s*/i, "");
                         if (cleanLine) {
                             questionText += (questionText ? " " : "") + cleanLine;
@@ -1469,7 +1468,6 @@ Kategori: Manajemen RM"></textarea>
                     }
                 });
 
-                // Susun Opsi A-E secara rapi
                 const finalOptions = [];
                 ["A", "B", "C", "D", "E"].forEach(letter => {
                     if (optionsMap[letter]) {
