@@ -375,14 +375,19 @@
 
             <div id="admin-toast-msg" class="hidden text-xs font-bold p-3 rounded-xl border text-center"></div>
 
-            <div class="bg-sky-950/40 border border-sky-800 p-3.5 rounded-xl flex justify-between items-center">
+            <div class="bg-sky-950/40 border border-sky-800 p-3.5 rounded-xl flex flex-wrap justify-between items-center gap-3">
                 <div>
                     <h4 class="text-xs font-bold text-sky-400">Sinkronisasi Cloud Terpusat</h4>
                     <p class="text-[11px] text-slate-400">Tekan tombol ini setelah mengatur Token & Bank Soal agar tersinkron ke semua HP/Laptop peserta & admin.</p>
                 </div>
-                <button onclick="pushCloudConfig()" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-lg shadow flex items-center gap-1.5">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> Sinkronkan Soal & Token
-                </button>
+                <div class="flex gap-2">
+                    <button onclick="resetUsedNIMsSession()" class="px-3.5 py-2 bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold rounded-lg shadow flex items-center gap-1.5" title="Izinkan semua NIM login 1x lagi untuk Ujian/Agenda Baru">
+                        <i class="fa-solid fa-user-gear"></i> Reset Sesi NIM (Agenda Baru)
+                    </button>
+                    <button onclick="pushCloudConfig()" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-lg shadow flex items-center gap-1.5">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Sinkronkan Soal & Token
+                    </button>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -642,6 +647,7 @@ Kategori: Manajemen RM"></textarea>
                             }
                             if (data.maxViolationsAllowed) appState.maxViolationsAllowed = Number(data.maxViolationsAllowed);
                             if (Array.isArray(data.whitelistNIM)) appState.whitelistNIM = data.whitelistNIM;
+                            if (Array.isArray(data.usedNIMs)) appState.usedNIMs = data.usedNIMs;
                             if (Array.isArray(data.questions) && data.questions.length > 0) appState.questions = data.questions;
                             if (Array.isArray(data.submissions) && data.submissions.length > 0) {
                                 mergeSubmissions(data.submissions);
@@ -683,7 +689,7 @@ Kategori: Manajemen RM"></textarea>
 
         async function pushCloudConfig() {
             if (!GOOGLE_SCRIPT_URL) return;
-            showInlineToast('admin-toast-msg', "Mengirim data Soal & Token ke Cloud Spreadsheet...", true);
+            showInlineToast('admin-toast-msg', "Mengirim data Soal, Token, & Sesi NIM ke Cloud Spreadsheet...", true);
             
             const payload = {
                 action: "saveConfig",
@@ -693,6 +699,7 @@ Kategori: Manajemen RM"></textarea>
                     examToken: appState.examToken || "UKOM2026",
                     maxViolationsAllowed: appState.maxViolationsAllowed,
                     whitelistNIM: appState.whitelistNIM,
+                    usedNIMs: appState.usedNIMs,
                     questions: appState.questions
                 }
             };
@@ -708,10 +715,20 @@ Kategori: Manajemen RM"></textarea>
                     body: formBody.toString()
                 });
                 
-                showInlineToast('admin-toast-msg', "BERHASIL! Data Token, Whitelist, & Bank Soal tersinkron ke Cloud. Semua device peserta & admin siap!", true);
+                showInlineToast('admin-toast-msg', "BERHASIL! Data Token, Whitelist, Sesi NIM & Bank Soal tersinkron ke Cloud!", true);
             } catch(e) {
                 console.error("Cloud push error:", e);
                 showInlineToast('admin-toast-msg', "Gagal terhubung ke Cloud Spreadsheet.");
+            }
+        }
+
+        // FUNGSI KHUSUS RESET SESI NIM UNTUK AGENDA UJIAN BARU
+        function resetUsedNIMsSession() {
+            if (confirm("Apakah Anda yakin ingin mereset sesi NIM? Mahasiswa akan dapat login 1x lagi menggunakan NIM yang sama pada agenda/soal baru ini.")) {
+                appState.usedNIMs = [];
+                saveStateToStorage();
+                pushCloudConfig();
+                showInlineToast('admin-toast-msg', "BERHASIL! Sesi NIM telah di-reset. Semua NIM kini bisa login 1x lagi di agenda baru!", true);
             }
         }
 
@@ -846,7 +863,7 @@ Kategori: Manajemen RM"></textarea>
             }
 
             if (appState.usedNIMs.includes(nim)) {
-                showInlineToast('login-status-msg', "NIM Anda sudah pernah mengikuti pengerjaan ujian ini!");
+                showInlineToast('login-status-msg', "NIM Anda sudah pernah mengikuti pengerjaan ujian pada agenda ini!");
                 return;
             }
 
@@ -905,6 +922,7 @@ Kategori: Manajemen RM"></textarea>
             if (!appState.usedNIMs.includes(appState.currentUser.nim)) {
                 appState.usedNIMs.push(appState.currentUser.nim);
                 saveStateToStorage();
+                pushCloudConfig(); // Memastikan NIM terpakai langsung terkunci di cloud
             }
 
             appState.cheatWarnings = 0;
@@ -1248,7 +1266,6 @@ Kategori: Manajemen RM"></textarea>
         function resetLocalSubmissions() {
             if (confirm("Apakah Anda yakin ingin mereset tampilan data analisis untuk event berikutnya? (Data analisis di Google Sheet/Cloud tetap tersimpan PERMANEN)")) {
                 appState.submissions = [];
-                appState.usedNIMs = [];
                 saveStateToStorage();
                 renderAdminDashboard();
                 showInlineToast('admin-toast-msg', "Tampilan event dibersihkan. Data master di Google Script App tetap tersimpan aman!", true);
