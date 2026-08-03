@@ -1380,7 +1380,7 @@ Kategori: Manajemen RM"></textarea>
             const structuredList = parseFlexibleTextToObjects(rawText);
             
             if (structuredList.length === 0) {
-                showInlineToast('admin-toast-msg', "Gagal mendeteksi soal! Pastikan file memuat Nomor Soal, Opsi A-E, Kunci, dan Kategori.");
+                showInlineToast('admin-toast-msg', "Gagal mendeteksi soal! Pastikan file memuat Soal, Opsi A-E, Kunci, dan Kategori.");
                 return;
             }
 
@@ -1402,34 +1402,39 @@ Kategori: Manajemen RM"></textarea>
             showInlineToast('admin-toast-msg', `Berhasil mengonversi ${structuredList.length} soal ke format baku urut! Klik "Generate / Inject Soal" untuk menyimpan.`, true);
         }
 
-        // PINTAR PARSING TEKS SANGAT FLEKSIBEL (ACAK / TIDAK URUT)
+        // PARSER SUPER SANGAT FLEKSIBEL (KHUSUS FORMAT WORD / DENGAN / TANPA NOMOR AWA L)
         function parseFlexibleTextToObjects(text) {
             if (!text) return [];
 
             const parsedQuestions = [];
             
-            // Regex mendeteksi indikator awal soal baru (bisa berupa nomor acak atau kata "Soal/No")
-            const questionHeaderRegex = /(?:^|\n)\s*(?:Soal|No|Nomor)?\s*(\d+)[\.\)\:\-]/gi;
-            
-            // Membagi blok berdasarkan kemunculan nomor soal
-            const matches = [...text.matchAll(questionHeaderRegex)];
-            let blocks = [];
+            // Bersihkan teks dari karakter kontrol tak terlihat
+            const cleanedText = text.replace(/\r/g, "");
 
-            if (matches.length > 0) {
-                for (let i = 0; i < matches.length; i++) {
-                    const startPos = matches[i].index;
-                    const endPos = (i + 1 < matches.length) ? matches[i + 1].index : text.length;
-                    const blockText = text.substring(startPos, endPos).trim();
-                    if (blockText) blocks.push(blockText);
-                }
-            } else {
-                blocks = text.split(/\n\s*\n/);
+            // Strategi 1: Pisahkan berdasarkan pola kemunculan Kunci + Kategori (Paling Akurat untuk Word)
+            const questionBlocks = [];
+            const blockRegex = /([\s\S]*?Kunci\s*:[\s\S]*?Kategori\s*:[^\n]*)/gi;
+            let match;
+
+            while ((match = blockRegex.exec(cleanedText)) !== null) {
+                questionBlocks.push(match[1].trim());
             }
 
-            blocks.forEach(block => {
+            // Fallback Strategi 2: Jika regex Kategori tidak terpisah sempurna, pisahkan per spasi ganda / baris kosong
+            const finalBlocks = questionBlocks.length > 0 ? questionBlocks : cleanedText.split(/\n\s*\n/);
+
+            finalBlocks.forEach(block => {
                 if (!block.trim()) return;
 
-                const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+                let lines = block.split('\n').map(l => l.trim()).filter(Boolean);
+                
+                // Jika file Word menggabungkan baris tanpa \n, lakukan pemisahan berbasis keyword Opsi/Kunci/Kategori
+                if (lines.length === 1) {
+                    const lineStr = lines[0];
+                    const splitRegex = /(?=\b[A-E][\.\)]\s+|\bKunci\s*:|\bKategori\s*:)/gi;
+                    lines = lineStr.split(splitRegex).map(l => l.trim()).filter(Boolean);
+                }
+
                 if (lines.length < 2) return;
 
                 let questionText = "";
@@ -1441,9 +1446,9 @@ Kategori: Manajemen RM"></textarea>
                     // Deteksi Opsi A-E
                     const optionMatch = line.match(/^\s*\(?([A-E])[\.\)\:\-]\s*(.*)/i);
                     // Deteksi Kunci Jawaban
-                    const keyMatch = line.match(/^(?:Kunci|Jawaban|Key|Ans|Answer)[\s\:\-]*([A-E])/i);
+                    const keyMatch = line.match(/^Kunci\s*:?\s*([A-E])/i);
                     // Deteksi Kategori
-                    const categoryMatch = line.match(/^(?:Kategori|Category|Bidang|Materi)[\s\:\-]*(.*)/i);
+                    const categoryMatch = line.match(/^Kategori\s*:?\s*(.*)/i);
 
                     if (optionMatch) {
                         const letter = optionMatch[1].toUpperCase();
@@ -1464,7 +1469,7 @@ Kategori: Manajemen RM"></textarea>
                     }
                 });
 
-                // Susun Opsi A-E
+                // Susun Opsi A-E secara rapi
                 const finalOptions = [];
                 ["A", "B", "C", "D", "E"].forEach(letter => {
                     if (optionsMap[letter]) {
@@ -1488,7 +1493,7 @@ Kategori: Manajemen RM"></textarea>
             return parsedQuestions;
         }
 
-        // INJECT / INJECT SOAL KE BANK SOAL
+        // INJECT / GENERATE SOAL KE BANK SOAL
         function processAIImport() {
             const text = document.getElementById('ai-import-area').value.trim();
             if (!text) return showInlineToast('admin-toast-msg', "Tempel teks atau unggah file soal terlebih dahulu!");
@@ -1496,7 +1501,7 @@ Kategori: Manajemen RM"></textarea>
             const parsedQuestions = parseFlexibleTextToObjects(text);
 
             if (parsedQuestions.length === 0) {
-                return showInlineToast('admin-toast-msg', "Format soal gagal terdeteksi! Pastikan terdapat Nomor Soal, Opsi A-E, Kunci, dan Kategori.");
+                return showInlineToast('admin-toast-msg', "Format soal gagal terdeteksi! Pastikan terdapat Soal, Opsi A-E, Kunci, dan Kategori.");
             }
 
             appState.questions = parsedQuestions;
