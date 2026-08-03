@@ -24,6 +24,8 @@
     <!-- Tailwind CSS & FontAwesome -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Mammoth.js Library untuk membaca file Word (.docx) secara client-side -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 
     <style>
         .unselectable {
@@ -458,7 +460,17 @@
             <!-- MANAJEMEN SOAL -->
             <div class="bg-slate-800/50 p-4 rounded-xl border border-slate-800 space-y-4">
                 <h3 class="text-xs font-bold text-purple-400 uppercase tracking-wider"><i class="fa-solid fa-database mr-1"></i> Input Bank Soal & Preview</h3>
-                <textarea id="ai-import-area" rows="6" class="w-full p-3 font-mono text-xs bg-slate-900 border border-slate-700 rounded-xl text-slate-200" placeholder="Format Inject:
+                
+                <!-- INPUT UPLOAD FILE TXT / DOC / DOCX -->
+                <div class="p-3 bg-slate-900 border border-slate-700 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <div>
+                        <span class="block text-xs font-bold text-slate-200"><i class="fa-solid fa-file-arrow-up text-sky-400 mr-1"></i> Unggah File Soal (.txt, .docx)</span>
+                        <p class="text-[10px] text-slate-400">Pilih file Word/TXT untuk membaca teks soal secara otomatis.</p>
+                    </div>
+                    <input type="file" id="file-import-input" accept=".txt,.doc,.docx" onchange="handleFileUpload(event)" class="text-xs text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-sky-600 file:text-white hover:file:bg-sky-500 cursor-pointer">
+                </div>
+
+                <textarea id="ai-import-area" rows="6" class="w-full p-3 font-mono text-xs bg-slate-900 border border-slate-700 rounded-xl text-slate-200" placeholder="Format Fleksibel:
 1. Teks Soal...
 A. Pilihan A
 B. Pilihan B
@@ -1327,54 +1339,140 @@ Kategori: Manajemen RM"></textarea>
             showInlineToast('admin-toast-msg', "Data analisis berhasil diunduh!", true);
         }
 
+        // PENANGAN UNGGAH FILE (.TXT, .DOC, .DOCX)
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const fileName = file.name.toLowerCase();
+            showInlineToast('admin-toast-msg', `Membaca file "${file.name}"...`, true);
+
+            if (fileName.endsWith('.docx')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const arrayBuffer = e.target.result;
+                    if (window.mammoth) {
+                        mammoth.extractRawText({ arrayBuffer: arrayBuffer })
+                            .then(function(result) {
+                                document.getElementById('ai-import-area').value = result.value;
+                                showInlineToast('admin-toast-msg', "Berhasil membaca isi file Word (.docx)!", true);
+                            })
+                            .catch(function(err) {
+                                showInlineToast('admin-toast-msg', "Gagal mengekstrak teks dari file Word.");
+                            });
+                    } else {
+                        showInlineToast('admin-toast-msg', "Modul Mammoth.js belum siap. Coba lagi.");
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('ai-import-area').value = e.target.result;
+                    showInlineToast('admin-toast-msg', "Berhasil membaca isi file teks!", true);
+                };
+                reader.readAsText(file, 'UTF-8');
+            }
+        }
+
+        // PARSER SOAL SANGAT FLEKSIBEL (TOLERAN FORMAT UNTUK AI/FILE)
         function processAIImport() {
             const text = document.getElementById('ai-import-area').value.trim();
-            if (!text) return showInlineToast('admin-toast-msg', "Tempel teks soal terlebih dahulu!");
+            if (!text) return showInlineToast('admin-toast-msg', "Tempel teks atau unggah file soal terlebih dahulu!");
 
             const parsedQuestions = [];
-            const blocks = text.split(/\n\s*\n/);
+            
+            // Regex mendeteksi awal nomor soal (Contoh: "1.", "Soal 1", "1)", "135.", "No 2:", dsb.)
+            const questionHeaderRegex = /(?:^|\n)\s*(?:Soal|No|Nomor)?\s*(\d+)[\.\)\:\-]/i;
+            
+            // Pisahkan teks berdasarkan pola kemunculan nomor soal
+            const rawParts = text.split(new RegExp(questionHeaderRegex.source, 'gi'));
+            
+            let blocks = [];
+            if (rawParts.length > 1) {
+                for (let i = 1; i < rawParts.length; i += 2) {
+                    let num = rawParts[i];
+                    let content = rawParts[i+1] || "";
+                    blocks.push(`${num}. ${content.trim()}`);
+                }
+            } else {
+                blocks = text.split(/\n\s*\n/);
+            }
 
             blocks.forEach(block => {
+                if (!block.trim()) return;
+
                 const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
-                if (lines.length < 3) return;
+                if (lines.length < 2) return;
 
                 let questionText = "";
-                let options = [];
+                let optionsMap = {};
                 let correctIndex = -1;
-                let category = "Statistik RMIK";
+                let category = "Umum";
 
                 lines.forEach(line => {
-                    const optionMatch = line.match(/^([A-E])[\.\)]\s*(.*)/i);
-                    const keyMatch = line.match(/^(Kunci|Jawaban|Key):\s*([A-E])/i);
-                    const categoryMatch = line.match(/^(Kategori|Category):\s*(.*)/i);
+                    // Deteksi Opsi A., B., C., D., E. (Toleran tanda kurung / titik / spasi)
+                    const optionMatch = line.match(/^\s*\(?([A-E])[\.\)\:\-]\s*(.*)/i);
+                    // Deteksi Kunci Jawaban
+                    const keyMatch = line.match(/^(?:Kunci|Jawaban|Key|Ans|Answer)[\s\:\-]*([A-E])/i);
+                    // Deteksi Kategori
+                    const categoryMatch = line.match(/^(?:Kategori|Category|Bidang|Materi)[\s\:\-]*(.*)/i);
 
-                    if (optionMatch) options.push(optionMatch[2].trim());
-                    else if (keyMatch) correctIndex = ["A", "B", "C", "D", "E"].indexOf(keyMatch[2].toUpperCase());
-                    else if (categoryMatch) category = categoryMatch[2].trim();
-                    else {
-                        const cleanLine = line.replace(/^\d+[\.\)]\s*/, "");
-                        if (cleanLine) questionText += (questionText ? " " : "") + cleanLine;
+                    if (optionMatch) {
+                        const letter = optionMatch[1].toUpperCase();
+                        const optContent = optionMatch[2].trim();
+                        optionsMap[letter] = optContent;
+                    } else if (keyMatch) {
+                        const keyLetter = keyMatch[1].toUpperCase();
+                        correctIndex = ["A", "B", "C", "D", "E"].indexOf(keyLetter);
+                    } else if (categoryMatch) {
+                        const catVal = categoryMatch[2].trim();
+                        if (catVal) category = catVal;
+                    } else {
+                        // Jika bukan Opsi/Kunci/Kategori, gabungkan sebagai Teks Soal
+                        const cleanLine = line.replace(/^\s*(?:Soal|No|Nomor)?\s*\d+[\.\)\:\-]\s*/i, "");
+                        if (cleanLine) {
+                            questionText += (questionText ? " " : "") + cleanLine;
+                        }
                     }
                 });
 
-                if (questionText && options.length >= 2 && correctIndex !== -1) {
-                    while (options.length < 5) options.push("Opsi Tambahan");
+                // Susun opsi A-E secara aman
+                const finalOptions = [];
+                ["A", "B", "C", "D", "E"].forEach(letter => {
+                    if (optionsMap[letter]) {
+                        finalOptions.push(optionsMap[letter]);
+                    }
+                });
+
+                // Jika kunci belum terdeteksi, coba default ke A agar tidak mengganggu sistem
+                if (correctIndex === -1 && finalOptions.length > 0) {
+                    correctIndex = 0;
+                }
+
+                if (questionText && finalOptions.length >= 2) {
+                    while (finalOptions.length < 5) {
+                        finalOptions.push("-");
+                    }
                     parsedQuestions.push({
                         text: questionText,
-                        options: options.slice(0, 5),
-                        correctIndex: correctIndex,
+                        options: finalOptions.slice(0, 5),
+                        correctIndex: correctIndex !== -1 ? correctIndex : 0,
                         category: category
                     });
                 }
             });
 
-            if (parsedQuestions.length === 0) return showInlineToast('admin-toast-msg', "Format soal gagal terdeteksi!");
+            if (parsedQuestions.length === 0) {
+                return showInlineToast('admin-toast-msg', "Format soal gagal terdeteksi! Pastikan ada Nomor Soal & Opsi A-E.");
+            }
 
             appState.questions = parsedQuestions;
             saveStateToStorage();
             pushCloudConfig();
             document.getElementById('ai-import-area').value = "";
             renderAdminDashboard();
+            showInlineToast('admin-toast-msg', `Berhasil mengolah & menyimpan ${parsedQuestions.length} soal!`, true);
         }
 
         function clearAllQuestions() {
@@ -1386,4 +1484,3 @@ Kategori: Manajemen RM"></textarea>
     </script>
 </body>
 </html>
-
